@@ -1,0 +1,4 @@
+{
+	"token": "insert your token here (see url below)",
+	"url": "https://api.telegram.org/bot{token}"
+}

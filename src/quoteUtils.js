@@ -27,28 +27,30 @@ export default {
 	 * @return {Number}      Chance of being interesting
 	 */
 	getTextInterestingnessValue(text) {
-	    var interestingness = 0;
+	    var interestingness = 0.05;
 	    var linkregex = /(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,24}(\/\S*)?/gi;
 	    var emoticons = /:+(-)*D|xd+(plz)?|;\)|:\^\)/i;
-	    var pretriggers = ["se", "kuka", "joka", "multa", "jolta", "siltä", "sen", "nice", "noice"];
+	    var pretriggers = ["se", "kuka", "joka", "multa", "jolta", "siltä", "sen", "nice", "noice", "tyhmä"];
 	    var badtriggers = ["ja"];
 
-	    var words = text.toLowerCase().split(/\s/);
+	    var words = text.toLowerCase().split(/\s+/);
 	    var randombias = 1; // no bias for now but keep the variable around
 
 	    // Link check
 	    if (linkregex.test(text))
 	        return 0.001; // Links have 0.1% chance to be a quote, no excuses
 
-	    interestingness += 0.1;
-
 	    /** Word length analysis */
 	    // Let's assume that interestingness drops naturally
+	    // Actually fuck that, let's assume interestingness PEAKS at 3 words:
+	    //     3-((x-3)/2)^2
+	    // http://fooplot.com/plot/p9wbu0ft5v
+	    // We also clamp it between 0.5 and 3
 	    // http://i.imgur.com/yUxYzzt.jpg
-	    var eCurve = function(n) {
-	        return 1/(Math.E * n);
+	    var curve = function(n) {
+			return Math.max(3 - Math.pow(((n-3)/2), 2), 0.5);
 	    }
-	    interestingness *= 1 + eCurve(words.length);
+	    interestingness *= curve(words.length);
 
 	    /** Emoticon analysis **/
 	    if(words.length === 1 && emoticons.test(text))

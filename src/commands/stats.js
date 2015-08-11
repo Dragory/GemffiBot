@@ -13,21 +13,17 @@ function insert(index, ...items) {
 	return this;
 }
 
-function parseStatsFromMessage(message, chatStats) {
-	if (message.text[0] === '/' || message.text.match(/^\s*$/) !== null) return;
-
-	const userId = message.from.id;
-
-	// Init the user's stats if they don't exist yet
-	let userStats = chatStats[userId] = chatStats[userId] || {
+function initStats(chatStats, userId) {
+	chatStats[userId] = chatStats[userId] || {
 		id: userId,
 		messages: 0,
 		letters: 0,
 		quote: ''
 	};
+}
 
-	// Update the user's name
-	userStats.name = names.get(message.from);
+function parseStatsFromMessage(message, userStats) {
+	if (message.text[0] === '/' || message.text.match(/^\s*$/) !== null) return;
 
 	// Update the stats
 	userStats.messages++;
@@ -67,11 +63,18 @@ export default function(message, next) {
 	let chatStats = stats[chatId];
 	const userId = message.from.id;
 
+	// Init the user's stats if they don't exist yet
+	initStats(chatStats[userId]);
+	let userStats = chatStats[userId];
+
+	// Always update the user's name
+	userStats.name = names.get(message.from);
+
 	if (message.text === '/stats') {
 		runStatsCommand(chatStats[userId], chatId);
 		return;
 	} else {
-		parseStatsFromMessage(message, chatStats);
+		parseStatsFromMessage(message, userStats);
 	}
 
 	next();

@@ -1,8 +1,8 @@
 {
-  "name": "shouttis2015-server",
+  "name": "gemffibot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

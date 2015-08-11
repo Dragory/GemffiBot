@@ -12,8 +12,14 @@ export default function(message, next) {
 	if (rollMatch[1]) rollNum = parseInt(rollMatch[1], 10);
 	if (isNaN(rollNum)) rollNum = 100;
 
-	const result = Math.floor(Math.random() * rollNum) + 1;
 	const name = names.get(message.from);
+	let result;
+
+	if (rollNum === 0) {
+		result = `ei nollasivusta noppaa oo olemassa vitun tyhmä`;
+	} else {
+		result = Math.floor(Math.random() * rollNum) + 1;
+	}
 
 	api.sendMessage(message.chat.id, `${name}: ${result}`);
 };

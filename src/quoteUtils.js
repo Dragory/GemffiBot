@@ -31,10 +31,10 @@ export default {
 	    var linkregex = /(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,24}(\/\S*)?/gi;
 	    var emoticons = /:+(-)*D|xd+(plz)?|;\)|:\^\)/i;
 	    var pretriggers = ["se", "kuka", "joka", "multa", "jolta", "siltä", "sen", "nice", "noice"];
-	    var badtriggers = ["ja"]
+	    var badtriggers = ["ja"];
 
 	    var words = text.toLowerCase().split(/\s/);
-	    var randombias = Math.min(Math.random() / 2, 0.5); // fug
+	    var randombias = 1; // no bias for now but keep the variable around
 
 	    // Link check
 	    if (linkregex.test(text))

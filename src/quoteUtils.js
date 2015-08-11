@@ -60,6 +60,7 @@ export default {
 	    if(badtriggers.indexOf(words[0]) !== -1)
 	        interestingness *= 0.6;
 
+	    console.log(`debug:\n\t${text}\n\t${Math.min(randombias * interestingness, 0.8)}`);
 	    return Math.min(randombias * interestingness, 0.8);
 	}
 };

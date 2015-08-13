@@ -21,5 +21,9 @@ export default function(message, next) {
 		result = Math.floor(Math.random() * rollNum) + 1;
 	}
 
+	if (result === 420) {
+		result = result.toString() + ' 🍁';
+	}
+
 	api.sendMessage(message.chat.id, `${name}: ${result}`);
 };

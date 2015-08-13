@@ -1,8 +1,10 @@
 import api from '../api';
+import config from '../config';
 import stats from '../../stats.json';
 import fs from 'fs';
 import names from '../names';
 import quoteUtils from '../quoteUtils';
+import moment from 'moment';
 
 setInterval(function() {
 	fs.writeFile(__dirname + '/../../stats.json', JSON.stringify(stats, null, 4));
@@ -38,7 +40,6 @@ function parseStatsFromMessage(message, userStats) {
 function runStatsCommand(userStats, chatId) {
 	if (userStats == null) return;
 
-	const lettersPerMessage = (userStats.letters / userStats.messages).toFixed(2); // Messages can't be 0 because we immediately add one to it above when we create the object
 	const nameParts = userStats.name.split(/\s+/g);
 	let nameLine;
 
@@ -50,8 +51,14 @@ function runStatsCommand(userStats, chatId) {
 		nameLine = nameParts.slice(0)::insert(1, `"${userStats.quote}"`).join(' ');
 	}
 
+	const lettersPerMessage = (userStats.letters / (userStats.messages || 1)).toFixed(2);
+
+	const now = moment.utc();
+	const messagesPerDay = (userStats.messages / (now.diff(moment(config.lastReset), 'days') || 1)).toFixed(2);
+
 	const statMessage = `${nameLine}
-${userStats.messages} messages, ${lettersPerMessage} letters/message avg`;
+${userStats.messages} messages since ${moment(config.lastReset).format('MMMM Do, YYYY')}
+${lettersPerMessage} letters/msg avg, ${messagesPerDay} msg/day avg`;
 
 	api.sendMessage(chatId, statMessage);
 }

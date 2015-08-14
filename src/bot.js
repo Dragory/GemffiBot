@@ -60,14 +60,29 @@ class UpdatePoller {
 	}
 }
 
+let spam = {};
+setInterval(function() {
+	Object.keys(spam).forEach(function(key) {
+		spam[key] = (spam[key] > 0 ? spam[key] - 1 : 0);
+	});
+}, 3000);
+
 function updateHandler(updates) {
 	updates.forEach(function(update) {
 		if (! update.message || ! update.message.text) return;
+		spam[update.message.from.id] = spam[update.message.from.id] || 0;
+		spam[update.message.from.id]++;
+
+		if (spam[update.message.from.id] > 2) return;
 
 		var i = -1;
 		function callNext() {
 			i++;
-			if (! commands[i]) return;
+			if (! commands[i]) {
+				// If we went through all commands, i.e. didn't trigger any, reduce their spamcount by one
+				spam[update.message.from.id]--;
+				return;
+			}
 			commands[i](update.message, callNext);
 		}
 

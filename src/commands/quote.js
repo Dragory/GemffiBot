@@ -55,16 +55,17 @@ export default function(message, next) {
 	const match = message.text.match(/^\/q\s+(\".*?\"|[^\s]+)(?:\s+(.+))?$/);
 	if (match !== null) {
 		let [_, quoteName, text] = match;
+
+		if (quoteName[0] === '"' && quoteName[quoteName.length - 1] ==) '"') {
+			quoteName = quoteName.slice(1, -1);
+		}
+
 		handleSetQuote(chatQuotes, quoteName, text, message);
-		return next();
+		return;
 	}
 
-	const readMatch = message.text.match(/^(?:\/)?([^\s]+)$/);
-	if (readMatch === null) return next();
+	if (! chatQuotes[message.text]) return next();
 
-	let quoteName = readMatch[1];
-	if (! chatQuotes[quoteName]) return next();
-
-	api.sendMessage(message.chat.id, `${chatQuotes[quoteName].quote}`);
+	api.sendMessage(message.chat.id, `${chatQuotes[message.text].quote}`);
 	// Set by ${quotes[quoteName].name} on ${moment(quotes[quoteName].date).format('MMMM Do, YYYY')}
 };

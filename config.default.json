@@ -1,4 +1,7 @@
 {
-	"token": "insert your token here (see url below)",
-	"url": "https://api.telegram.org/bot{token}"
+	"token": "<insert your token here (see url below)>",
+	"url": "https://api.telegram.org/bot{token}",
+	"lastReset": "<last reset date in a format moment.js understands>",
+	"cleverbotIoUser": "<your cleverbot.io api user>",
+	"cleverbotIoKey": "<your cleverbot.io api key>"
 }

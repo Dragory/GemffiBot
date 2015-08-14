@@ -56,6 +56,6 @@ export default function(message, next) {
 	let quoteName = readMatch[1];
 	if (! quotes[quoteName]) return next();
 
-	api.sendMessage(message.chat.id, `${quotes[quoteName].quote}
-Set by ${quotes[quoteName].name} on ${moment(quotes[quoteName].date).format('MMMM Do, YYYY')}`);
+	api.sendMessage(message.chat.id, `${quotes[quoteName].quote}`);
+	// Set by ${quotes[quoteName].name} on ${moment(quotes[quoteName].date).format('MMMM Do, YYYY')}
 };

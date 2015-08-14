@@ -1,14 +1,15 @@
 import api from '../api';
 import config from '../config';
-import stats from '../../stats.json';
+import db from '../db';
 import fs from 'fs';
 import names from '../names';
+import shutdown from '../shutdown';
 import quoteUtils from '../quoteUtils';
 import moment from 'moment';
 
-setInterval(function() {
-	fs.writeFile(__dirname + '/../../stats.json', JSON.stringify(stats, null, 4));
-}, 60 * 1000);
+let stats = db.get('stats');
+setInterval(() => db.set('stats', stats), 60 * 1000);
+shutdown.onExit(() => db.set('stats', stats));
 
 function insert(index, ...items) {
 	this.splice.apply(this, [index, 0].concat(items));

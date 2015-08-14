@@ -1,16 +1,23 @@
 import request from 'request';
 import config from './config';
+import shutdown from './shutdown';
 
 import eightBallCmd from './commands/8ball';
 import rollCmd from './commands/roll';
 import statsCmd from './commands/stats';
 import aiCmd from './commands/ai';
+import quoteCmd from './commands/quote';
+
+shutdown.onExit(function(type) {
+	console.log('exiting', type);
+});
 
 let commands = [
 	statsCmd,
 	eightBallCmd,
 	rollCmd,
-	aiCmd
+	aiCmd,
+	quoteCmd
 ];
 
 // Longpolling yay

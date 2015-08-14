@@ -4,3 +4,4 @@
 *.sublime-workspace
 /config.json
 /stats.json
+/quotes.json

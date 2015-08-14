@@ -56,7 +56,7 @@ export default function(message, next) {
 	if (match !== null) {
 		let [_, quoteName, text] = match;
 
-		if (quoteName[0] === '"' && quoteName[quoteName.length - 1] ==) '"') {
+		if (quoteName[0] === '"' && quoteName[quoteName.length - 1] == '"') {
 			quoteName = quoteName.slice(1, -1);
 		}
 

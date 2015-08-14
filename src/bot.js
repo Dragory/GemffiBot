@@ -1,3 +1,5 @@
+import "babel/polyfill";
+
 import request from 'request';
 import config from './config';
 import shutdown from './shutdown';

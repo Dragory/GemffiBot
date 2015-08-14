@@ -9,9 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babel": "^5.8.21",
+    "cleverbot.io": "Dragory/node-cleverbot.io",
     "moment": "^2.10.6",
-    "request": "^2.58.0",
-    "cleverbot.io": "Dragory/node-cleverbot.io"
+    "request": "^2.58.0"
   },
   "devDependencies": {
     "del": "^1.1.1",

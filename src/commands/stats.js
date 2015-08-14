@@ -71,7 +71,7 @@ export default function(message, next) {
 	const userId = message.from.id;
 
 	// Init the user's stats if they don't exist yet
-	initStats(chatStats[userId]);
+	initStats(chatStats, userId);
 	let userStats = chatStats[userId];
 
 	// Always update the user's name

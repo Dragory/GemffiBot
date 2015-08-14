@@ -64,8 +64,11 @@ export default function(message, next) {
 		return;
 	}
 
-	if (! chatQuotes[message.text]) return next();
+	if (message.text[0] !== '!') return next();
+	let quoteName = message.text.slice(1);
 
-	api.sendMessage(message.chat.id, `${chatQuotes[message.text].quote}`);
+	if (! chatQuotes[quoteName]) return next();
+
+	api.sendMessage(message.chat.id, `${chatQuotes[quoteName].quote}`);
 	// Set by ${quotes[quoteName].name} on ${moment(quotes[quoteName].date).format('MMMM Do, YYYY')}
 };

@@ -23,7 +23,7 @@ export default function(message, next) {
 	let eightBallMatch = message.text.match(/^\/8ball\s+.+/);
 	if (! eightBallMatch) return next();
 
-	const name = names.get(message.from);
+	const name = names.short(message.from);
 	const reply = eightBallReplies[Math.floor(Math.random() * eightBallReplies.length)];
 
 	api.sendMessage(message.chat.id, `${name}: ${reply}`);

@@ -12,5 +12,10 @@ export default {
 	get(user) {
 		if (user.first_name && user.last_name) return `${user.first_name} ${user.last_name}`;
 		return user.first_name || user.last_name || user.username || user.id || '???';
+	},
+
+	short(user) {
+		let fullNick = this.get(user).trim();
+		return fullNick.split(/\s+/g)[0];
 	}
 };

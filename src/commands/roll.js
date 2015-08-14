@@ -12,7 +12,7 @@ export default function(message, next) {
 	if (rollMatch[1]) rollNum = parseInt(rollMatch[1], 10);
 	if (isNaN(rollNum)) rollNum = 100;
 
-	const name = names.get(message.from);
+	const name = names.short(message.from);
 	let result;
 
 	if (rollNum === 0) {

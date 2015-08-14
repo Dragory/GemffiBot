@@ -52,7 +52,7 @@ function handleSetQuote(chatQuotes, quoteName, text, message) {
 export default function(message, next) {
 	let chatQuotes = quotes[message.chat.id] = quotes[message.chat.id] || {};
 
-	const match = message.text.match(/^\/q\s+([^\s]+)(?:\s+(.+))?$/);
+	const match = message.text.match(/^\/q\s+(\".*?\"|[^\s]+)(?:\s+(.+))?$/);
 	if (match !== null) {
 		let [_, quoteName, text] = match;
 		handleSetQuote(chatQuotes, quoteName, text, message);

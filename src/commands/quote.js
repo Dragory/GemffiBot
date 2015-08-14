@@ -54,7 +54,6 @@ export default function(message, next) {
 
 	const match = message.text.match(/^\/q\s+([^\s]+)(?:\s+(.+))?$/);
 	if (match !== null) {
-		console.log('setting quote');
 		let [_, quoteName, text] = match;
 		handleSetQuote(chatQuotes, quoteName, text, message);
 		return next();

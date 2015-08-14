@@ -1,6 +1,7 @@
 import moment from 'moment';
 import api from '../api';
 import names from '../names';
+import config from '../config';
 import db from '../db';
 import shutdown from '../shutdown';
 
@@ -24,38 +25,47 @@ Set by ${quotes[quoteName].name} on ${moment(quotes[quoteName].date).format('MMM
 
  */
 
-function handleSetQuote(quoteName, text, message) {
+function handleSetQuote(chatQuotes, quoteName, text, message) {
 	const name = names.short(message.from);
 
-	if (quotes[quoteName] && quotes[quoteName].userId !== message.from.id) {
+	if (chatQuotes[quoteName] && chatQuotes[quoteName].userId !== message.from.id && config.admins.indexOf(message.from.id) === -1) {
 		api.sendMessage(message.chat.id, `${name}: sorry, you can't change someone else's quote`);
 		return;
 	}
 
-	quotes[quoteName] = {
+	if (text == null) {
+		delete chatQuotes[quoteName];
+		api.sendMessage(message.chat.id, `${name}: quote ${quoteName} removed`);
+		return;
+	}
+
+	chatQuotes[quoteName] = {
 		userId: message.from.id,
 		name: name,
 		date: moment.utc().format(),
-		quote: text
+		quote: text.replace(/(^|\s)@/g, '$1') // Strip highlights; thanks Kytö
 	};
 
 	api.sendMessage(message.chat.id, `${name}: quote ${quoteName} set`);
 }
 
 export default function(message, next) {
-	const match = message.text.match(/^\/q\s+([^\s]+?)\s+(.+)/);
+	let chatQuotes = quotes[message.chat.id] = quotes[message.chat.id] || {};
+
+	const match = message.text.match(/^\/q\s+([^\s]+)(?:\s+(.+))?$/);
 	if (match !== null) {
+		console.log('setting quote');
 		let [_, quoteName, text] = match;
-		handleSetQuote(quoteName, text, message);
+		handleSetQuote(chatQuotes, quoteName, text, message);
 		return next();
 	}
 
-	const readMatch = message.text.match(/^\/([^\s]+)/);
+	const readMatch = message.text.match(/^(?:\/)?([^\s]+)$/);
 	if (readMatch === null) return next();
 
 	let quoteName = readMatch[1];
-	if (! quotes[quoteName]) return next();
+	if (! chatQuotes[quoteName]) return next();
 
-	api.sendMessage(message.chat.id, `${quotes[quoteName].quote}`);
+	api.sendMessage(message.chat.id, `${chatQuotes[quoteName].quote}`);
 	// Set by ${quotes[quoteName].name} on ${moment(quotes[quoteName].date).format('MMMM Do, YYYY')}
 };

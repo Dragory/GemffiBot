@@ -31,7 +31,7 @@ function initStats(chatStats, userId) {
 }
 
 function parseStatsFromMessage(message, userStats) {
-	if (message.text[0] === '/' || message.text.match(/^\s*$/) !== null) return;
+	if (message.text[0] === '/' || message.text[0] === '!' || message.text.match(/^\s*$/) !== null) return;
 
 	// Update the stats
 	userStats.messages++;

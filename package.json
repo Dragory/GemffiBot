@@ -10,7 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "moment": "^2.10.6",
-    "request": "^2.58.0"
+    "request": "^2.58.0",
+    "cleverbot.io": "Dragory/node-cleverbot.io"
   },
   "devDependencies": {
     "del": "^1.1.1",

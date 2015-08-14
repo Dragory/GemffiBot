@@ -4,11 +4,13 @@ import config from './config';
 import eightBallCmd from './commands/8ball';
 import rollCmd from './commands/roll';
 import statsCmd from './commands/stats';
+import aiCmd from './commands/ai';
 
 let commands = [
 	statsCmd,
 	eightBallCmd,
-	rollCmd
+	rollCmd,
+	aiCmd
 ];
 
 // Longpolling yay

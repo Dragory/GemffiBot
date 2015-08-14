@@ -20,8 +20,13 @@ function initStats(chatStats, userId) {
 		id: userId,
 		messages: 0,
 		letters: 0,
-		quote: ''
+		quote: '',
+		arrivalDate: moment.utc().format()
 	};
+
+	if (! chatStats[userId].arrivalDate) {
+		chatStats[userId].arrivalDate = "2015-07-01T00:00:00.000Z";
+	}
 }
 
 function parseStatsFromMessage(message, userStats) {
@@ -54,10 +59,10 @@ function runStatsCommand(userStats, chatId) {
 	const lettersPerMessage = (userStats.letters / (userStats.messages || 1)).toFixed(2);
 
 	const now = moment.utc();
-	const messagesPerDay = (userStats.messages / (now.diff(moment(config.lastReset), 'days') || 1)).toFixed(2);
+	const messagesPerDay = (userStats.messages / (now.diff(moment(userStats.arrivalDate), 'days') || 1)).toFixed(2);
 
 	const statMessage = `${nameLine}
-${userStats.messages} messages since ${moment(config.lastReset).format('MMMM Do, YYYY')}
+${userStats.messages} messages since ${moment(userStats.arrivalDate).format('MMMM Do, YYYY')}
 ${lettersPerMessage} letters/msg avg, ${messagesPerDay} msg/day avg`;
 
 	api.sendMessage(chatId, statMessage);

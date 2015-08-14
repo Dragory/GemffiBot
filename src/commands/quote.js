@@ -28,6 +28,11 @@ Set by ${quotes[quoteName].name} on ${moment(quotes[quoteName].date).format('MMM
 function handleSetQuote(chatQuotes, quoteName, text, message) {
 	const name = names.short(message.from);
 
+	if (config.quoteBanned.indexOf(message.from.id) !== -1) {
+		api.sendMessage(message.chat.id, `${name}: ur banned from using quotes u fok`);
+		return;
+	}
+
 	if (chatQuotes[quoteName] && chatQuotes[quoteName].userId !== message.from.id && config.admins.indexOf(message.from.id) === -1) {
 		api.sendMessage(message.chat.id, `${name}: sorry, you can't change someone else's quote`);
 		return;
@@ -39,11 +44,19 @@ function handleSetQuote(chatQuotes, quoteName, text, message) {
 		return;
 	}
 
+	text = text.replace(/(^|\s)@/g, '$1'); // Strip highlights; thanks Kytö
+	text = text.replace(/\n|\r/, ' '); // Strip newlines; thanks Jake
+
+	if (text.length > 80) {
+		api.sendMessage(message.chat.id, `${name}: quote too long`);
+		return;
+	}
+
 	chatQuotes[quoteName] = {
 		userId: message.from.id,
 		name: name,
 		date: moment.utc().format(),
-		quote: text.replace(/(^|\s)@/g, '$1') // Strip highlights; thanks Kytö
+		quote: text
 	};
 
 	api.sendMessage(message.chat.id, `${name}: quote ${quoteName} set`);
@@ -68,6 +81,12 @@ export default function(message, next) {
 	let quoteName = message.text.slice(1);
 
 	if (! chatQuotes[quoteName]) return next();
+
+	// If the quote is found but originates from a quote banned user, remove the quote
+	if (config.quoteBanned.indexOf(chatQuotes[quoteName].userId) !== -1) {
+		delete chatQuotes[quoteName];
+		return next();
+	}
 
 	api.sendMessage(message.chat.id, `${chatQuotes[quoteName].quote}`);
 	// Set by ${quotes[quoteName].name} on ${moment(quotes[quoteName].date).format('MMMM Do, YYYY')}

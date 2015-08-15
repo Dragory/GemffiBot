@@ -8,7 +8,7 @@ export default {
 			cb(type);
 
 			// Because it's a "once" like binding, we don't have to worry about
-			// infinite recursion here
+			// infinite recursion here, or even the CB running twice
 			process.exit();
 		}
 
@@ -18,6 +18,7 @@ export default {
 		process.once('SIGUSR2', runCb.bind(null, 'SIGUSR2')); // nodemon
 		process.once('uncaughtException', function(e) {
 			cb();
+			// Again, "once" -> no recursion
 			throw e;
 		}); // exceptions
 	}

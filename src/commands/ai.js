@@ -26,7 +26,10 @@ export default function(message, next) {
 	const input = commandMatch[1];
 	const name = names.short(message.from);
 
+	console.log('ai input', input);
+
 	bot.ask(input, (err, response) => {
+		console.log('bot ask response', response);
 		if (err) { console.log('bot.ask:', err, response); return; }
 		api.sendMessage(message.chat.id, `${name}: ${response}`);
 	});

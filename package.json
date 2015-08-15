@@ -11,6 +11,7 @@
   "dependencies": {
     "babel": "^5.8.21",
     "cleverbot.io": "Dragory/node-cleverbot.io",
+    "he": "^0.5.0",
     "moment": "^2.10.6",
     "request": "^2.58.0"
   },

@@ -6,7 +6,7 @@ export default function(message, next) {
 	let dMatch = message.text.match('^\/d([0-9]+)');
 	if (dMatch !== null) message.text = '/roll ' + dMatch[1];
 
-	let rollMatch = message.text.match(new RegExp(`/^\/roll(?:@${me.username})?(?:\s+(.+))?/`));
+	let rollMatch = message.text.match(new RegExp(`/^\\/roll(?:@${me.username})?(?:\\s+(.+))?/`));
 	if (rollMatch === null) return next();
 
 	let rollNum = 100;

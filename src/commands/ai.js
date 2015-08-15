@@ -20,7 +20,7 @@ bot.create((err, session) => {
 export default function(message, next) {
 	if (botSession == null) return next();
 
-	const commandMatch = message.text.match(new RegExp(`/^\/ai(?:@${me.username})?\s+(.+)/`));
+	const commandMatch = message.text.match(new RegExp(`/^\\/ai(?:@${me.username})?\\s+(.+)/`));
 	console.log('ai match', commandMatch);
 	if (commandMatch === null) return next();
 

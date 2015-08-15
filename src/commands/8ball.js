@@ -22,7 +22,7 @@ const eightBallReplies = [
 ];
 
 export default function(message, next) {
-	let eightBallMatch = message.text.match(new RegExp(`/^\/8ball(?:@${me.username})?\s+.+/`));
+	let eightBallMatch = message.text.match(new RegExp(`/^\\/8ball(?:@${me.username})?\\s+.+/`));
 	if (! eightBallMatch) return next();
 
 	const name = names.short(message.from);

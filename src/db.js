@@ -4,11 +4,27 @@ const basePath = __dirname + '/..';
 
 function get(name, def) {
 	const file = `${basePath}/${name}.json`;
+	let exists = true;
 
 	try {
-		let content = fs.readFileSync(file, {encoding: 'utf8'});
-		return JSON.parse(content);
+		fs.statSync(file);
 	} catch (e) {
+		if (e.code === 'ENOENT') {
+			exists = false;
+		}
+	}
+
+	if (exists) {
+		let content;
+		try {
+			// If the file exists but we can't read it, don't overwrite it
+			content = fs.readFileSync(file, {encoding: 'utf8'});
+		} catch (e) {
+			content = '{}';
+		}
+
+		return JSON.parse(content);
+	} else {
 		let defContent = def || {};
 		fs.writeFile(file, JSON.stringify(defContent, null, 4), {encoding: 'utf8'});
 

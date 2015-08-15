@@ -4,26 +4,13 @@ import names from '../names';
 import config from '../config';
 import db from '../db';
 import shutdown from '../shutdown';
+import me from '../me';
 
 export default function() {};
 
 let quotes = db.get('quotes');
 setInterval(() => db.set('quotes', quotes), 60 * 1000);
 shutdown.onExit(() => db.set('quotes', quotes));
-
-/*
-
-// Asking for an old quote
-if (text == null) {
-	if (quotes[quoteName]) {
-		api.sendMessage(message.chat.id, `${quotes[quoteName].quote}
-Set by ${quotes[quoteName].name} on ${moment(quotes[quoteName].date).format('MMMM Do, YYYY')}`);
-	}
-
-	return next();
-}
-
- */
 
 function handleSetQuote(chatQuotes, quoteName, text, message) {
 	const name = names.short(message.from);
@@ -65,7 +52,7 @@ function handleSetQuote(chatQuotes, quoteName, text, message) {
 export default function(message, next) {
 	let chatQuotes = quotes[message.chat.id] = quotes[message.chat.id] || {};
 
-	const match = message.text.match(/^\/q\s+(\".*?\"|[^\s]+)(?:\s+(.+))?$/);
+	const match = message.text.match(new RegExp(`/^\/q(?:@${me.username})?\s+(\".*?\"|[^\s]+)(?:\s+(.+))?$/`));
 	if (match !== null) {
 		let [_, quoteName, text] = match;
 

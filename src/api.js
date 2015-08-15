@@ -13,4 +13,10 @@ methods.sendMessage = function(chatId, text) {
 	});
 };
 
+methods.getMe = function(cb) {
+	return request.get({
+		url: `${config.url}/getMe`
+	}, cb);
+};
+
 export default methods;

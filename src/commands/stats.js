@@ -6,6 +6,7 @@ import names from '../names';
 import shutdown from '../shutdown';
 import quoteUtils from '../quoteUtils';
 import moment from 'moment';
+import me from '../me';
 
 let stats = db.get('stats');
 setInterval(() => db.set('stats', stats), 60 * 1000);
@@ -83,7 +84,7 @@ export default function(message, next) {
 	// Always update the user's name
 	userStats.name = names.get(message.from);
 
-	if (message.text === '/stats') {
+	if (message.text === '/stats' || message.text === '/stats@' + me.username) {
 		runStatsCommand(chatStats[userId], chatId);
 		return;
 	} else {

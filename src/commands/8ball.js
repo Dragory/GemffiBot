@@ -1,5 +1,7 @@
 import api from '../api';
 import names from '../names';
+import config from '../config';
+import me from '../me';
 
 const eightBallReplies = [
 	'Varmasti',
@@ -20,7 +22,7 @@ const eightBallReplies = [
 ];
 
 export default function(message, next) {
-	let eightBallMatch = message.text.match(/^\/8ball\s+.+/);
+	let eightBallMatch = message.text.match(new RegExp(`/^\/8ball(?:@${me.username})?\s+.+/`));
 	if (! eightBallMatch) return next();
 
 	const name = names.short(message.from);

@@ -84,7 +84,11 @@ export default function(message, next) {
 	// Always update the user's name
 	userStats.name = names.get(message.from);
 
-	if (message.text === '/stats' || message.text === '/stats@' + me.username) {
+	if (message.text === '/stats reset' || message.text === '/stats@' + me.username + ' reset') {
+		delete chatStats[userId];
+		api.sendMessage(chatId, `${names.short(message.from)}: your stats have been reset`);
+		return;
+	} else if (message.text === '/stats' || message.text === '/stats@' + me.username) {
 		runStatsCommand(chatStats[userId], chatId);
 		return;
 	} else {

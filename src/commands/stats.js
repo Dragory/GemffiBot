@@ -12,22 +12,27 @@ let stats = db.get('stats');
 setInterval(() => db.set('stats', stats), 60 * 1000);
 shutdown.onExit(() => db.set('stats', stats));
 
+const defaultStats = {
+	id: 0,
+	messages: 0,
+	letters: 0,
+	quote: '',
+	arrivalDate: moment.utc().format()
+};
+
 function insert(index, ...items) {
 	this.splice.apply(this, [index, 0].concat(items));
 	return this;
 }
 
 function initStats(chatStats, userId) {
-	chatStats[userId] = chatStats[userId] || {
-		id: userId,
-		messages: 0,
-		letters: 0,
-		quote: '',
-		arrivalDate: moment.utc().format()
-	};
+	chatStats[userId] = chatStats[userId] || {};
 
-	if (! chatStats[userId].arrivalDate) {
-		chatStats[userId].arrivalDate = "2015-07-01T00:00:00.000Z";
+	for (let key in defaultStats) {
+		let val = defaultStats[key];
+		if (typeof chatStats[userId][key] === 'undefined') {
+			chatStats[userId][key] = defaultStats[key];
+		}
 	}
 }
 
@@ -84,7 +89,22 @@ export default function(message, next) {
 	// Always update the user's name
 	userStats.name = names.get(message.from);
 
-	if (message.text === '/stats reset' || message.text === '/stats@' + me.username + ' reset') {
+	var setStatsMatch = message.text.match(/^\/stats\s+set\s+([0-9]+)\s+(.+)$/);
+
+	if (setStatsMatch && config.admins.indexOf(message.from.id) !== -1) {
+		let [_, targetId, statJson] = setStatsMatch;
+		let newStats;
+
+		try { newStats = JSON.parse(statJson); } catch (e) {
+			api.sendMessage(chatId, `Invalid JSON:\n${statJson}`);
+			return;
+		}
+
+		initStats(chatStats, targetId);
+		Object.assign(chatStats[targetId], newStats);
+
+		api.sendMessage(chatId, `Done.`);
+	} else if (message.text === '/stats reset' || message.text === '/stats@' + me.username + ' reset') {
 		delete chatStats[userId];
 		api.sendMessage(chatId, `${names.short(message.from)}: your stats have been reset`);
 		return;

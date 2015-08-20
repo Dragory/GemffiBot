@@ -8,6 +8,7 @@ import eightBallCmd from './commands/8ball';
 import rollCmd from './commands/roll';
 import statsCmd from './commands/stats';
 import aiCmd from './commands/ai';
+import idCmd from './commands/id';
 import quoteCmd from './commands/quote';
 
 shutdown.onExit(function(type) {
@@ -19,6 +20,7 @@ let commands = [
 	eightBallCmd,
 	rollCmd,
 	aiCmd,
+	idCmd,
 	quoteCmd
 ];
 

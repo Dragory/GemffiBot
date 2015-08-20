@@ -34,6 +34,7 @@ function get(name, def) {
 
 function set(name, data) {
 	const file = `${basePath}/${name}.json`;
+	console.log(`Saving to ${file} data with length ${JSON.stringify(data, null, 4).length}`);
 	fs.writeFile(file, JSON.stringify(data, null, 4), {encoding: 'utf8'});
 }
 

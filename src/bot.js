@@ -9,6 +9,7 @@ import rollCmd from './commands/roll';
 import statsCmd from './commands/stats';
 import aiCmd from './commands/ai';
 import idCmd from './commands/id';
+import oiCmd from './commands/oi';
 import quoteCmd from './commands/quote';
 
 shutdown.onExit(function(type) {
@@ -21,6 +22,7 @@ let commands = [
 	rollCmd,
 	aiCmd,
 	idCmd,
+	oiCmd,
 	quoteCmd
 ];
 

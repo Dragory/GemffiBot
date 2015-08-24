@@ -125,6 +125,20 @@ export default function(message, next) {
 			let output = getStatSummary(stats);
 			api.sendMessage(CHAT_ID, output);
 			return;
+		} else if (message.text === '/stats old' || message.text === `/stats@${me.username} old`) {
+			try {
+				let oldStats = require('fs').readFileSync(__dirname + '/../../stats.json', {encoding: 'utf8'});
+				oldStats = JSON.parse(oldStats || {});
+				let chatStats = oldStats[CHAT_ID];
+				if (! chatStats) throw new Error('Chat stats not found');
+				let userStats = chatStats[USER_ID];
+				if (! userStats) throw new Error('User stats not found');
+
+				api.sendMessage(CHAT_ID, `${names.short(message.from)}: ${JSON.stringify(userStats)}`);
+			} catch (e) {
+				api.sendMessage(CHAT_ID, `${names.short(message.from)}: Could not fetch old stats: ${e}`);
+				return;
+			}
 		} else {
 			// PARSE STATS
 			parseStatsFromMessage(message, stats);

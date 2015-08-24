@@ -4,7 +4,10 @@ import me from '../me';
 
 export default function(message, next) {
 	let idMatch = message.text.match('^\/id(?:@${me.username})?$');
-	if (idMatch === null) return next();
+	let cidMatch = message.text.match('^\/cid(?:@${me.username})?$');
 
-	api.sendMessage(message.chat.id, `${names.short(message.from)}: ${message.from.id}`);
+	if (idMatch === null && cidMatch === null) return next();
+
+	if (idMatch) api.sendMessage(message.chat.id, `${names.short(message.from)}: ${message.from.id}`);
+	if (cidMatch) api.sendMessage(message.chat.id, `${names.short(message.from)}: ${message.chat.id}`);
 };

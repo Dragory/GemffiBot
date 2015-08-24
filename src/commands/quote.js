@@ -21,7 +21,7 @@ function handleSetQuote(chatId, trigger, text, message) {
 		}
 
 		// Removing old quotes (the check above checks user rights for this too)
-		if (quote && text == null) {
+		if (text == null) {
 			quoteRepo.del(chatId, trigger).then(() => {
 				api.sendMessage(message.chat.id, `${name}: quote ${trigger} removed`);
 			});
@@ -61,6 +61,40 @@ function handleSetQuote(chatId, trigger, text, message) {
 }
 
 export default function(message, next) {
+	if (message.text === '/q restore') {
+		try {
+			let oldQuotes = require('fs').readFileSync(__dirname + '/../../quotes.json', {encoding: 'utf8'});
+			oldQuotes = JSON.parse(oldQuotes);
+
+			let chatQuotes = oldQuotes[message.chat.id];
+			if (! chatQuotes) return;
+			let userQuotes = Object.keys(chatQuotes).map((key) => {
+				let obj = chatQuotes[key];
+				obj.trigger = key;
+				return obj;
+			}).filter((quote) => {
+				return (quote.userId === message.from.id);
+			});
+
+			userQuotes.forEach((oldQuote) => {
+				quoteRepo.get(message.chat.id, oldQuote.trigger).then((quote) => {
+					if (quote) return; // Don't overwrite new quotes
+					quoteRepo.create({
+						chat_id: message.chat.id,
+						trigger: oldQuote.trigger,
+						user_id: message.from.id,
+						quote: oldQuote.quote,
+						date: oldQuote.date
+					});
+				});
+			});
+		} catch (e) {
+			api.sendMessage(message.chat.id, `${names.short(message.from)}: Could not restore old quotes: ${e}`);
+			throw e;
+		}
+		return;
+	}
+
 	const match = message.text.match(new RegExp(`^\\/q(?:@${me.username})?\\s+(\\".*?\\"|[^\\s]+)(?:\\s+(.+))?$`));
 
 	if (match !== null) {

@@ -12,10 +12,6 @@ import idCmd from './commands/id';
 import oiCmd from './commands/oi';
 import quoteCmd from './commands/quote';
 
-shutdown.onExit(function(type) {
-	console.log('exiting', type);
-});
-
 let commands = [
 	statsCmd,
 	eightBallCmd,

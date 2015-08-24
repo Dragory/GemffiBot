@@ -3,5 +3,4 @@
 *.sublime-project
 *.sublime-workspace
 /config.json
-/stats.json
-/quotes.json
+/data.db

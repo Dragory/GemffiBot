@@ -4,6 +4,13 @@ import cmdMatcher from '../cmdMatcher';
 
 import coinsRepo from '../coinsRepo';
 
+// Limit gambling addiction
+let userBets = {};
+setInterval(function() {
+	// Reset userBets every minute
+	userBets = {};
+}, 60000);
+
 export default function(message, next) {
 	let cmdMatch = cmdMatcher.match(message.text, 'bet', cmdMatcher.MATCH_NUM, 'for', cmdMatcher.MATCH_NUM);
 	if (! cmdMatch) return next();
@@ -16,6 +23,14 @@ export default function(message, next) {
 	if (amount <= 0 || chance <= 1 || ! amount || ! chance || amount === Infinity) return next();
 	if (chance > 100) {
 		api.sendMessage(message.chat.id, `${name}: The maximum roll you can bet for is 100`);
+		return;
+	}
+
+	userBets[message.user.id] = userBets[message.user.id] || 0;
+	userBets[message.user.id]++;
+
+	if (userBets[message.user.id] === 3) {
+		api.sendMessage(message.chat.id, `${name}: Beep boop you have reached your gambling limit you addicted fuck. Please do (not) try again later.`);
 		return;
 	}
 

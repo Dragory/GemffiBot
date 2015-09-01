@@ -13,7 +13,11 @@ export default function(message, next) {
 	let [amount, , chance] = cmdMatch;
 	chance = parseInt(chance, 10);
 	amount = parseInt(amount, 10);
-	if (amount <= 0 || chance <= 1 || ! amount || ! chance) return next();
+	if (amount <= 0 || chance <= 1 || ! amount || ! chance || amount === Infinity) return next();
+	if (chance > 100) {
+		api.sendMessage(message.chat.id, `${name}: The maximum roll you can bet for is 100`);
+		return;
+	}
 
 	coinsRepo.get(message.chat.id, message.from.id).then((coins) => {
 		if (coins < amount) {

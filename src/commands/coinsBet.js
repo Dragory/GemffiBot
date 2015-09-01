@@ -26,10 +26,10 @@ export default function(message, next) {
 		return;
 	}
 
-	userBets[message.user.id] = userBets[message.user.id] || 0;
-	userBets[message.user.id]++;
+	userBets[message.from.id] = userBets[message.from.id] || 0;
+	userBets[message.from.id]++;
 
-	if (userBets[message.user.id] === 3) {
+	if (userBets[message.from.id] === 3) {
 		api.sendMessage(message.chat.id, `${name}: Beep boop you have reached your gambling limit you addicted fuck. Please do (not) try again later.`);
 		return;
 	}

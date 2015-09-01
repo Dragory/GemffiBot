@@ -18,6 +18,8 @@ import coinsBetCmd from './commands/coinsBet';
 import coinsSetCmd from './commands/coinsSet';
 import coinsTopCmd from './commands/coinsTop';
 
+import commandsCmd from './commands/commands';
+
 let commands = [
 	nameSaver,
 	statsCmd,
@@ -31,6 +33,8 @@ let commands = [
 	coinsBetCmd,
 	coinsSetCmd,
 	coinsTopCmd,
+
+	commandsCmd,
 
 	quoteCmd
 ];

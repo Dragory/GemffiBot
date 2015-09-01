@@ -39,45 +39,6 @@ export default function(message, next) {
 		return;
 	}
 
-	if (rollMatch[1] && rollMatch[1].slice(0, 6) === 'double') {
-		let doubleNum = parseInt(rollMatch[1].slice(7), 10);
-		rollWinsRepo.getByNum(message.chat.id, doubleNum).then((row) => {
-			if (! row || row.user_id !== message.from.id) {
-				api.sendMessage(message.chat.id, `${name}: You don't have the ${doubleNum} win`);
-				return;
-			}
-
-			let doDouble = Math.floor(Math.random() * 2);
-			if (doDouble === 1) {
-				// Ding ding ding
-				let tryDouble = (num) => {
-					rollWinsRepo.getByNum(message.chat.id, num).then((row) => {
-						if (row) { tryDouble(num + 1); return; }
-						rollWinsRepo.create({
-							chat_id: message.chat.id,
-							user_id: message.from.id,
-							num: num,
-							date: moment.utc().format('YYYY-MM-DD HH:mm:ss')
-						}).then(() => {
-							return rollWinsRepo.del(message.chat.id, doubleNum);
-						}).then(() => {
-							api.sendMessage(message.chat.id, `${name}: DING DING DING`);
-						});
-					});
-				};
-
-				tryDouble(doubleNum * 2);
-			} else {
-				// Wah wah waa
-				rollWinsRepo.del(message.chat.id, doubleNum).then(() => {
-					api.sendMessage(message.chat.id, `${name}: Wah wah waa`);
-				});
-			}
-		});
-
-		return;
-	}
-
 	if (rollMatch[1] === 'stats') {
 		rollWinsRepo.allByChat(message.chat.id).then((wins) => {
 			let userWins = {};
@@ -145,8 +106,7 @@ export default function(message, next) {
 				date: moment.utc().format('YYYY-MM-DD HH:mm:ss')
 			});
 		}).then(() => {
-			api.sendMessage(message.chat.id, `${name}: Winner is you! Now try doubling it with /roll double ${result}
-See chatwide stats with /roll stats`);
+			api.sendMessage(message.chat.id, `${name}: Winner is you! See chatwide stats with /roll stats`);
 		}).catch((e) => {
 			if (e === 'win_exists') return;
 			throw e;

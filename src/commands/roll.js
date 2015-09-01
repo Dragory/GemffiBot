@@ -6,7 +6,7 @@ import me from '../me';
 import rollWinsRepo from '../rollWinsRepo';
 
 export default function(message, next) {
-	let dMatch = message.text.match('^\/d([0-9]+)');
+	let dMatch = message.text.match('^\/d((?:\-)?[0-9]+)');
 	if (dMatch !== null) message.text = '/roll ' + dMatch[1];
 
 	let rollMatch = message.text.match(new RegExp(`^\\/roll(?:@${me.username})?(?:\\s+(.+))?`));
@@ -39,6 +39,45 @@ export default function(message, next) {
 		return;
 	}
 
+	if (rollMatch[1] && rollMatch[1].slice(0, 6) === 'double') {
+		let doubleNum = parseInt(rollMatch[1].slice(7), 10);
+		rollWinsRepo.getByNum(message.chat.id, doubleNum).then((row) => {
+			if (! row || row.user_id !== message.from.id) {
+				api.sendMessage(message.chat.id, `${name}: You don't have the ${doubleNum} win`);
+				return;
+			}
+
+			let doDouble = Math.floor(Math.random() * 2);
+			if (doDouble === 1) {
+				// Ding ding ding
+				let tryDouble = (num) => {
+					rollWinsRepo.getByNum(message.chat.id, num).then((row) => {
+						if (row) { tryDouble(num + 1); return; }
+						rollWinsRepo.create({
+							chat_id: message.chat.id,
+							user_id: message.from.id,
+							num: num,
+							date: moment.utc().format('YYYY-MM-DD HH:mm:ss')
+						}).then(() => {
+							return rollWinsRepo.del(message.chat.id, doubleNum);
+						}).then(() => {
+							api.sendMessage(message.chat.id, `${name}: DING DING DING`);
+						});
+					});
+				};
+
+				tryDouble(doubleNum * 2);
+			} else {
+				// Wah wah waa
+				rollWinsRepo.del(message.chat.id, doubleNum).then(() => {
+					api.sendMessage(message.chat.id, `${name}: Wah wah waa`);
+				});
+			}
+		});
+
+		return;
+	}
+
 	if (rollMatch[1] === 'stats') {
 		rollWinsRepo.allByChat(message.chat.id).then((wins) => {
 			let userWins = {};
@@ -60,7 +99,7 @@ export default function(message, next) {
 			});
 
 			let userWinsArr = Object.keys(userWins).map((k) => userWins[k]);
-			userWinsArr.sort((a, b) => (a.total > b.total ? -1 : 1));
+			userWinsArr.sort((a, b) => (Math.abs(a.total) > Math.abs(b.total) ? -1 : 1));
 
 			let responseMessage = userWinsArr.slice(0, 5).map((info, i) => {
 				let rollsText = info.win_rolls.join(', ');
@@ -95,7 +134,7 @@ export default function(message, next) {
 	api.sendMessage(message.chat.id, `${name}: ${rollResultText}`);
 
 	// If the roll result was the same as the rollNum, mark the user down as a "winner" for that number
-	if (result === rollNum && rollNum >= 100) {
+	if (result === rollNum && Math.abs(rollNum) >= 100) {
 		rollWinsRepo.getByNum(message.chat.id, result).then((row) => {
 			if (row) throw 'win_exists'; // Someone already won this number, ignore
 

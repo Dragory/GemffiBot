@@ -8,7 +8,7 @@ export default function(message, next) {
 	api.sendMessage(message.chat.id,
 `Commands:
 /roll <number> - rolls a dice
-/d<number> - same as above, shorthand, e.g. /d123
+/d<number> - same as above, shorthand (e.g. /d123)
 /stats - prints your chat stats
 /coins - shows your coins
 /bet <amount> for <roll> - lets you bet your coins (return multiplier is same as roll chance)

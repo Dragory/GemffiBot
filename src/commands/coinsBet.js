@@ -5,12 +5,12 @@ import cmdMatcher from '../cmdMatcher';
 import coinsRepo from '../coinsRepo';
 
 export default function(message, next) {
-	let cmdMatch = cmdMatcher.match(message.text, 'coins', 'bet', cmdMatcher.MATCH_NUM, 'for', cmdMatcher.MATCH_NUM);
+	let cmdMatch = cmdMatcher.match(message.text, 'bet', cmdMatcher.MATCH_NUM, 'for', cmdMatcher.MATCH_NUM);
 	if (! cmdMatch) return next();
 
 	const name = names.short(message.from);
 
-	let [, amount, , chance] = cmdMatch;
+	let [amount, , chance] = cmdMatch;
 	chance = parseInt(chance, 10);
 	amount = parseInt(amount, 10);
 	if (amount <= 0 || chance <= 1 || ! amount || ! chance) return next();

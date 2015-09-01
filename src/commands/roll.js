@@ -30,6 +30,15 @@ export default function(message, next) {
 		return;
 	}
 
+	if (rollMatch[1] && rollMatch[1].slice(0, 9) === 'stats del' && config.admins.indexOf(message.from.id) !== -1) {
+		let num = parseInt(rollMatch[1].slice(10), 10) || 0;
+		rollWinsRepo.del(message.chat.id, num).then(() => {
+			api.sendMessage(message.chat.id, `${name}: Done`);
+		});
+
+		return;
+	}
+
 	if (rollMatch[1] === 'stats') {
 		rollWinsRepo.allByChat(message.chat.id).then((wins) => {
 			let userWins = {};
@@ -77,8 +86,6 @@ export default function(message, next) {
 	} else {
 		result = Math.floor(Math.random() * rollNum) + 1;
 	}
-
-	result = rollNum;
 
 	let rollResultText = result.toString();
 	if (result === 420) {

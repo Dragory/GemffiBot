@@ -13,6 +13,11 @@ import idCmd from './commands/id';
 import oiCmd from './commands/oi';
 import quoteCmd from './commands/quote';
 
+import coinsGetCmd from './commands/coinsGet';
+import coinsBetCmd from './commands/coinsBet';
+import coinsSetCmd from './commands/coinsSet';
+import coinsTopCmd from './commands/coinsTop';
+
 let commands = [
 	nameSaver,
 	statsCmd,
@@ -21,6 +26,12 @@ let commands = [
 	aiCmd,
 	idCmd,
 	oiCmd,
+
+	coinsGetCmd,
+	coinsBetCmd,
+	coinsSetCmd,
+	coinsTopCmd,
+
 	quoteCmd
 ];
 

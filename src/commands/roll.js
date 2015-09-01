@@ -145,7 +145,8 @@ export default function(message, next) {
 				date: moment.utc().format('YYYY-MM-DD HH:mm:ss')
 			});
 		}).then(() => {
-			api.sendMessage(message.chat.id, `${name}: Winner is you! See chatwide stats with /roll stats`);
+			api.sendMessage(message.chat.id, `${name}: Winner is you! Now try doubling it with /roll double ${result}
+See chatwide stats with /roll stats`);
 		}).catch((e) => {
 			if (e === 'win_exists') return;
 			throw e;

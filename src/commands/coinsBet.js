@@ -29,8 +29,13 @@ export default function(message, next) {
 	userBets[message.from.id] = userBets[message.from.id] || 0;
 	userBets[message.from.id]++;
 
-	if (userBets[message.from.id] === 3) {
-		api.sendMessage(message.chat.id, `${name}: Beep boop you have reached your gambling limit you addicted fuck. Please do (not) try again later.`);
+	if (userBets[message.from.id] > 2) {
+		// Prevent further betting if you've gambled more than twice in a minute
+		if (userBets[message.from.id] === 3) {
+			// Inform the user once they go over their limit but don't spam it, so only show it when they reach exactly 3 bets in a minute
+			api.sendMessage(message.chat.id, `${name}: Beep boop you have reached your gambling limit you addicted fuck. Please do (not) try again later.`);
+		}
+
 		return;
 	}
 

@@ -4,15 +4,17 @@ import request from 'request';
 import config from './config';
 import shutdown from './shutdown';
 
+import nameSaver from './commands/nameSaver';
+import statsCmd from './commands/stats';
 import eightBallCmd from './commands/8ball';
 import rollCmd from './commands/roll';
-import statsCmd from './commands/stats';
 import aiCmd from './commands/ai';
 import idCmd from './commands/id';
 import oiCmd from './commands/oi';
 import quoteCmd from './commands/quote';
 
 let commands = [
+	nameSaver,
 	statsCmd,
 	eightBallCmd,
 	rollCmd,

@@ -4,6 +4,8 @@ import sqlite3 from 'sqlite3';
 var db = new sqlite3.Database(__dirname + '/../data.db');
 db = Promise.promisifyAll(db);
 
+let placeholders = (count) => '?'.repeat(count).split('').join(', ');
+
 var dbReady = db.runAsync(`CREATE TABLE IF NOT EXISTS quotes (
 	chat_id INT,
 	user_id INT,
@@ -12,8 +14,6 @@ var dbReady = db.runAsync(`CREATE TABLE IF NOT EXISTS quotes (
 	\`date\` DATETIME,
 	PRIMARY KEY (chat_id, trigger)
 )`);
-
-let placeholders = (count) => '?'.repeat(count).split('').join(', ');
 
 function get(chat_id, trigger) {
 	return dbReady.then(() => {

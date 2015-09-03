@@ -5,6 +5,7 @@ import names from '../names';
 import quoteUtils from '../quoteUtils';
 import moment from 'moment';
 import me from '../me';
+import cmd from '../cmd';
 import statsRepo from '../statsRepo';
 
 import {insert} from '../util';

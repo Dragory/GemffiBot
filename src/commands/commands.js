@@ -1,9 +1,9 @@
 import api from '../api';
-import cmdMatcher from '../cmdMatcher';
+import cmd from '../cmd';
 
 export default function(message, next) {
-	let cmdMatch = cmdMatcher.match(message.text, 'commands');
-	if (! cmdMatch) return next();
+	let match = cmd.match(message.text, 'commands');
+	if (! match) return next();
 
 	api.sendMessage(message.chat.id,
 `Commands:
@@ -18,4 +18,6 @@ export default function(message, next) {
 /cid - prints the chat's id
 /oi <text> - OI M8
 /ai <text> - chatbot`);
+
+	return next(true);
 };

@@ -2,7 +2,13 @@ import "babel/polyfill";
 
 import request from 'request';
 import config from './config';
+import api from './api';
+import cmd from './cmd';
 import shutdown from './shutdown';
+
+/**
+ * COMMAND IMPORTS
+ */
 
 import nameSaver from './commands/nameSaver';
 import statsCmd from './commands/stats';
@@ -20,94 +26,41 @@ import coinsTopCmd from './commands/coinsTop';
 
 import commandsCmd from './commands/commands';
 
+/**
+ * COOLDOWNS/LIMITS
+ */
+
+var defaultCD = cmd.createCD(30);
+var shortCD   = cmd.createCD(5);
+
+var defaultLimiter = cmd.createLimiter(5, 60 * 10);
+
+/**
+ * COMMAND LISTING
+ */
+
 let commands = [
-	nameSaver,
-	statsCmd,
-	eightBallCmd,
-	rollCmd,
-	aiCmd,
-	idCmd,
-	oiCmd,
+	{cmd: nameSaver},
+	{cmd: statsCmd},
+	{cmd: eightBallCmd},
+	{cmd: rollCmd},
+	{cmd: aiCmd},
+	{cmd: idCmd},
+	{cmd: oiCmd},
 
-	coinsGetCmd,
-	coinsBetCmd,
-	coinsSetCmd,
-	coinsTopCmd,
+	{cmd: coinsGetCmd},
+	{cmd: coinsBetCmd},
+	{cmd: coinsSetCmd},
+	{cmd: coinsTopCmd},
 
-	commandsCmd,
+	{cmd: commandsCmd},
 
-	quoteCmd
+	{cmd: quoteCmd}
 ];
 
-// Longpolling yay
-class UpdatePoller {
-	constructor(url, cb) {
-		this.url = url;
-		this.cb = cb || function() {};
+/**
+ * START
+ */
 
-		this.running = false;
-		this.lastUpdateId = 0;
-	}
-
-	start() {
-		this.running = true;
-		this.poll();
-	}
-
-	end() {
-		this.running = false;
-	}
-
-	poll() {
-		const query = {
-			timeout: 60,
-			offset: this.lastUpdateId + 1
-		};
-
-		request({url: this.url, qs: query}, (err, res, body) => {
-			if (! err && res.statusCode === 200) {
-				let data = JSON.parse(body);
-
-				if (data.result.length > 0) {
-					this.lastUpdateId = data.result[data.result.length - 1].update_id;
-					this.cb(data.result);
-				}
-			}
-
-			if (this.running) this.poll();
-		});
-	}
-}
-
-let spam = {};
-setInterval(function() {
-	Object.keys(spam).forEach(function(key) {
-		spam[key] = (spam[key] > 0 ? spam[key] - 1 : 0);
-	});
-}, 3000);
-
-function updateHandler(updates) {
-	updates.forEach(function(update) {
-		if (! update.message || ! update.message.text) return;
-		spam[update.message.from.id] = spam[update.message.from.id] || 0;
-		spam[update.message.from.id]++;
-
-		if (spam[update.message.from.id] > 2) return;
-
-		var i = -1;
-		function callNext() {
-			i++;
-			if (! commands[i]) {
-				// If we went through all commands, i.e. didn't trigger any, reduce their spamcount by one
-				spam[update.message.from.id]--;
-				return;
-			}
-			commands[i](update.message, callNext);
-		}
-
-		callNext();
-	});
-}
-
-let poller = new UpdatePoller(`${config.url}/getUpdates`, updateHandler);
-poller.start();
+let updateHandler = cmd.createUpdateHandler(commands);
+api.onUpdate(updateHandler);

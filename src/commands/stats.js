@@ -122,8 +122,11 @@ export default function(message, next) {
 			return;
 		} else if (message.text === '/stats' || message.text === '/stats@' + me.username) {
 			// OUTPUT STATS
+			if (! cmd.checkAndInformLimits(message.from.id, cmd.globalCD, cmd.globalLimiter)) return;
+
 			let output = getStatSummary(stats);
 			api.sendMessage(CHAT_ID, output);
+
 			return;
 		} else if (message.text === '/stats old' || message.text === `/stats@${me.username} old`) {
 			try {
@@ -137,12 +140,13 @@ export default function(message, next) {
 				api.sendMessage(CHAT_ID, `${names.short(message.from)}: ${JSON.stringify(userStats)}`);
 			} catch (e) {
 				api.sendMessage(CHAT_ID, `${names.short(message.from)}: Could not fetch old stats: ${e}`);
-				return;
 			}
+
+			return;
 		} else {
 			// PARSE STATS
 			parseStatsFromMessage(message, stats);
-			statsRepo.set(CHAT_ID, USER_ID, stats).then(next);
+			statsRepo.set(CHAT_ID, USER_ID, stats).then(next.bind(null, false));
 		}
 	});
 };

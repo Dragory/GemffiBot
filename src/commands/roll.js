@@ -1,5 +1,6 @@
 import moment from 'moment';
 import api from '../api';
+import cmd from '../cmd';
 import config from '../config';
 import names from '../names';
 import me from '../me';
@@ -11,6 +12,8 @@ export default function(message, next) {
 
 	let rollMatch = message.text.match(new RegExp(`^\\/roll(?:@${me.username})?(?:\\s+(.+))?`));
 	if (rollMatch === null) return next();
+
+	if (! cmd.checkAndInformLimits(message.from.id, cmd.globalCD, cmd.globalLimiter)) return;
 
 	const name = names.short(message.from);
 
@@ -71,8 +74,6 @@ export default function(message, next) {
 
 			api.sendMessage(message.chat.id, responseMessage);
 		});
-
-		return;
 	}
 
 	let rollNum = 100;

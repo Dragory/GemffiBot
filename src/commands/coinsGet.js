@@ -1,12 +1,12 @@
 import api from '../api';
 import names from '../names';
-import {match} from '../cmdMatcher';
+import cmd from '../cmd';
 
 import coinsRepo from '../coinsRepo';
 
 export default function(message, next) {
-	let cmdMatch = match(message.text, 'coins');
-	if (! cmdMatch || cmdMatch._rest != null) return next();
+	let match = cmd.match(message.text, 'coins');
+	if (! match) return next();
 
 	const name = names.short(message.from);
 

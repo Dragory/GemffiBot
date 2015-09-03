@@ -1,7 +1,7 @@
 import api from '../api';
+import cmd from '../cmd';
 import names from '../names';
 import config from '../config';
-import me from '../me';
 import he from 'he';
 
 import cleverbot from 'cleverbot.io';
@@ -21,10 +21,12 @@ bot.create((err, session) => {
 export default function(message, next) {
 	if (botSession == null) return next();
 
-	const commandMatch = message.text.match(new RegExp(`^\\/ai(?:@${me.username})?\\s+(.+)`));
-	if (commandMatch === null) return next();
+	let match = cmd.match(message.text, 'ai', cmd.MATCH_REST);
+	if (! match) return next();
 
-	const input = commandMatch[1];
+	if (! cmd.checkAndInformLimits(message.from.id, cmd.globalCD, cmd.globalLimiter)) return;
+
+	const input = match[1];
 	const name = names.short(message.from);
 
 	bot.ask(input, (err, response) => {

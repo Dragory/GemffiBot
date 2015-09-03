@@ -1,16 +1,21 @@
 import api from '../api';
 import names from '../names';
-import cmdMatcher from '../cmdMatcher';
+import cmd from '../cmd';
 
 import coinsRepo from '../coinsRepo';
 
+let coinsCD = cmd.createCD(5);
+let coinsLimiter = cmd.createLimiter(5, 60 * 10);
+
 export default function(message, next) {
-	let cmdMatch = cmdMatcher.match(message.text, 'bet', cmdMatcher.MATCH_NUM, 'for', cmdMatcher.MATCH_NUM);
-	if (! cmdMatch) return next();
+	let match = cmd.match(message.text, 'bet', cmd.MATCH_NUM, 'for', cmd.MATCH_NUM);
+	if (! match) return next();
+
+	if (! cmd.checkAndInformLimits(message.from.id, coinsCD, coinsLimiter)) return;
 
 	const name = names.short(message.from);
 
-	let [amount, , chance] = cmdMatch;
+	let [amount, , chance] = match;
 	chance = parseInt(chance, 10);
 	amount = parseInt(amount, 10);
 	if (amount <= 0 || chance <= 1 || ! amount || ! chance) return next();

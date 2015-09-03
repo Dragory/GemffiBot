@@ -1,7 +1,6 @@
 import api from '../api';
 import names from '../names';
-import config from '../config';
-import me from '../me';
+import cmd from '../cmd';
 
 const eightBallReplies = [
 	'Varmasti',
@@ -22,8 +21,10 @@ const eightBallReplies = [
 ];
 
 export default function(message, next) {
-	let eightBallMatch = message.text.match(new RegExp(`^\\/8ball(?:@${me.username})?\\s+.+`));
-	if (! eightBallMatch) return next();
+	let match = cmd.match(message.text, '8ball', cmd.MATCH_REST);
+	if (! match) return next();
+
+	if (! cmd.checkAndInformLimits(message.from.id, cmd.globalCD, cmd.globalLimiter)) return;
 
 	const name = names.short(message.from);
 	const reply = eightBallReplies[Math.floor(Math.random() * eightBallReplies.length)];

@@ -74,6 +74,8 @@ export default function(message, next) {
 
 			api.sendMessage(message.chat.id, responseMessage);
 		});
+
+		return;
 	}
 
 	let rollNum = 100;

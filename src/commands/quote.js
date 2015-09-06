@@ -6,7 +6,7 @@ import me from '../me';
 import quoteRepo from '../quoteRepo';
 import Promise from 'bluebird';
 
-function handleSetQuote(chatId, trigger, text, message) {
+function handleSetQuote(chatId, trigger, text, message, next) {
 	const name = names.short(message.from);
 
 	if (config.quoteBanned.indexOf(message.from.id) !== -1) {
@@ -112,7 +112,7 @@ export default function(message, next) {
 			trigger = trigger.slice(1, -1);
 		}
 
-		handleSetQuote(message.chat.id, trigger, text, message);
+		handleSetQuote(message.chat.id, trigger, text, message, next);
 		return;
 	}
 

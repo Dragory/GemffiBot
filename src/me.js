@@ -2,9 +2,19 @@ import api from './api';
 
 var info = {};
 
-api.getMe(function(err, res, body) {
-	let me = JSON.parse(body);
-	Object.assign(info, me.result);
-});
+function loadMe() {
+	api.getMe(function(err, res, body) {
+		try {
+			let me = JSON.parse(body);
+			Object.assign(info, me.result);
+		} catch (e) {
+			console.log(`getMe error: ${e.toString()}`);
+			console.log(`getMe body: ${body}`);
+			loadMe();
+		}
+	});
+}
+
+loadMe();
 
 export default info;

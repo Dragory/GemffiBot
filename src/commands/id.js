@@ -11,5 +11,5 @@ export default function(message, next) {
 	if (idMatch) api.sendMessage(message.chat.id, `${names.short(message.from)}: ${message.from.id}`);
 	if (cidMatch) api.sendMessage(message.chat.id, `${names.short(message.from)}: ${message.chat.id}`);
 
-	return next(true);
+	next(true);
 };

@@ -13,7 +13,7 @@ export default function(message, next) {
 	let rollMatch = message.text.match(new RegExp(`^\\/roll(?:@${me.username})?(?:\\s+(.+))?`));
 	if (rollMatch === null) return next();
 
-	if (! cmd.checkAndInformLimits(message.from.id, cmd.globalCD, cmd.globalLimiter)) return;
+	if (! cmd.checkAndInformLimits(message.from.id, cmd.globalCD, cmd.globalLimiter)) return next(true);
 
 	const name = names.short(message.from);
 
@@ -21,13 +21,15 @@ export default function(message, next) {
 		let rollStats = rollMatch[1].slice(10);
 		try { rollStats = JSON.parse(rollStats); } catch (e) {
 			api.sendMessage(message.chat.id, `${name}: Invalid JSON: ${e.toString()}`);
-			return;
+			return next(true);
 		}
 
 		rollWinsRepo.create(rollStats).then(() => {
 			api.sendMessage(message.chat.id, `${name}: Done`);
+			next(true);
 		}).catch((e) => {
 			api.sendMessage(message.chat.id, `${name}: ${e.toString()}`);
+			next(true);
 		});
 
 		return;
@@ -37,6 +39,7 @@ export default function(message, next) {
 		let num = parseInt(rollMatch[1].slice(10), 10) || 0;
 		rollWinsRepo.del(message.chat.id, num).then(() => {
 			api.sendMessage(message.chat.id, `${name}: Done`);
+			next(true);
 		});
 
 		return;
@@ -73,6 +76,7 @@ export default function(message, next) {
 			}).join('\n');
 
 			api.sendMessage(message.chat.id, responseMessage);
+			next(true);
 		});
 
 		return;
@@ -110,9 +114,12 @@ export default function(message, next) {
 			});
 		}).then(() => {
 			api.sendMessage(message.chat.id, `${name}: Winner is you! See chatwide stats with /roll stats`);
+			next(true);
 		}).catch((e) => {
-			if (e === 'win_exists') return;
+			if (e === 'win_exists') return next(true);
 			throw e;
 		});
+	} else {
+		next(true);
 	}
 };

@@ -19,5 +19,5 @@ export default function(message, next) {
 /oi <text> - OI M8
 /ai <text> - chatbot`);
 
-	return next(true);
+	next(true);
 };

@@ -9,7 +9,7 @@ export default function(message, next) {
 	let match = cmd.match(message.text, 'top');
 	if (! match) return next();
 
-	if (! cmd.checkAndInformLimits(message.from.id, cmd.globalCD, cmd.globalLimiter)) return;
+	if (! cmd.checkAndInformLimits(message.from.id, cmd.globalCD, cmd.globalLimiter)) return next(true);
 
 	coinsRepo.all(message.chat.id).then((records) => {
 		records.sort((a, b) => (a.coins > b.coins ? -1 : 1));
@@ -19,5 +19,6 @@ export default function(message, next) {
 		}).join('\n');
 
 		api.sendMessage(message.chat.id, resultMessage);
+		next(true);
 	});
 };

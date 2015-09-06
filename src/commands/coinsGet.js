@@ -12,5 +12,6 @@ export default function(message, next) {
 
 	coinsRepo.get(message.chat.id, message.from.id).then((coins) => {
 		api.sendMessage(message.chat.id, `${name}: ${coins} coins`);
+		next(true);
 	});
 };

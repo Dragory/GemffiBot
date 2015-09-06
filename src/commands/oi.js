@@ -8,4 +8,5 @@ export default function(message, next) {
 	let text = idMatch[1].replace(/i/ig, 'oi').replace(/y/ig, 'oy').replace(/[au]/ig, 'o').toUpperCase();
 
 	api.sendMessage(message.chat.id, text);
+	next(true);
 };

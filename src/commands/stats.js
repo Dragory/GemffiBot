@@ -101,7 +101,7 @@ export default function(message, next) {
 
 			try { newStats = JSON.parse(statJson); } catch (e) {
 				api.sendMessage(CHAT_ID, `Invalid JSON:\n${statJson}`);
-				return;
+				return next(true);
 			}
 
 			statsRepo.get(CHAT_ID, targetId).then((targetStats) => {
@@ -111,23 +111,28 @@ export default function(message, next) {
 				Object.assign(targetStats, newStats);
 				console.log(targetId, newStats, targetStats);
 				return statsRepo.set(CHAT_ID, targetId, targetStats);
-			}).then(api.sendMessage.bind(api, CHAT_ID, `Done.`));
+			}).then(() => {
+				api.sendMessage.bind(api, CHAT_ID, `Done.`);
+				next(true);
+			});
 
 			return;
 		} else if (message.text === '/stats reset' || message.text === '/stats@' + me.username + ' reset') {
 			// RESET STATS
 			statsRepo.set(CHAT_ID, USER_ID, {}).then(() => {
 				api.sendMessage(CHAT_ID, `${names.short(message.from)}: your stats have been reset`);
+				next(true);
 			});
 
 			return;
 		} else if (message.text === '/stats' || message.text === '/stats@' + me.username) {
 			// OUTPUT STATS
-			if (! cmd.checkAndInformLimits(message.from.id, cmd.globalCD, cmd.globalLimiter)) return;
+			if (! cmd.checkAndInformLimits(message.from.id, cmd.globalCD, cmd.globalLimiter)) return next(true);
 
 			let output = getStatSummary(stats);
 			api.sendMessage(CHAT_ID, output);
 
+			next(true);
 			return;
 		} else if (message.text === '/stats old' || message.text === `/stats@${me.username} old`) {
 			try {
@@ -139,8 +144,10 @@ export default function(message, next) {
 				if (! userStats) throw new Error('User stats not found');
 
 				api.sendMessage(CHAT_ID, `${names.short(message.from)}: ${JSON.stringify(userStats)}`);
+				next(true);
 			} catch (e) {
 				api.sendMessage(CHAT_ID, `${names.short(message.from)}: Could not fetch old stats: ${e}`);
+				next(true);
 			}
 
 			return;

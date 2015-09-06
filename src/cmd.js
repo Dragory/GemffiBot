@@ -83,19 +83,32 @@ function checkAndInformLimits(id, cd, limiter) {
 	return true;
 }
 
-function createUpdateHandler(commands) {
+/**
+ * Returns a function that runs the given update through the given commands.
+ * Calls cb() once finished.
+ * @param  {Array}    commands Commands to run
+ * @param  {Function} cb       Function to call after finishing with this update
+ */
+function createUpdateHandler(commands, cb) {
+	let timeout, done = () => {
+		clearTimeout(timeout);
+		cb();
+	};
+
 	return function(update) {
 		let i = -1;
 
-		function callNext() {
+		function callNext(last) {
 			i++;
+			if (last) return done();
 
 			let command = commands[i];
-			if (! command) return;
+			if (! command) return done();
 
 			command.cmd(update.message, callNext);
 		}
 
+		timeout = setTimeout(done, 10000); // 10 sec timeout if commands get stuck or throw errors
 		callNext();
 	};
 }

@@ -62,5 +62,5 @@ let commands = [
  * START
  */
 
-let updateHandler = cmd.createUpdateHandler(commands);
+let updateHandler = cmd.createUpdateHandler(commands, api.nextUpdate);
 api.onUpdate(updateHandler);

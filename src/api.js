@@ -60,14 +60,30 @@ class UpdatePoller {
 }
 
 let onUpdateListeners = [];
+let updateQueue = []; // FIFO
+let waiting = true;
+
 methods.onUpdate = function(cb) {
 	onUpdateListeners.push(cb);
 };
 
+function callListeners(update) {
+	onUpdateListeners.forEach((listener) => listener(update));
+}
+
+methods.nextUpdate = function() {
+	if (updateQueue.length === 0) {
+		waiting = true;
+		return;
+	}
+
+	callListeners(updateQueue.shift());
+	waiting = false;
+}
+
 let poller = new UpdatePoller(`${config.url}/getUpdates`, (updates) => {
-	updates.forEach((update) => {
-		onUpdateListeners.forEach((listener) => listener(update));
-	});
+	updateQueue = updateQueue.concat(updates);
+	if (waiting) methods.nextUpdate();
 });
 poller.start();
 

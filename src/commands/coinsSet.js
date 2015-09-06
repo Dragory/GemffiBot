@@ -12,7 +12,7 @@ export default function(message, next) {
 	let match = cmd.match(message.text, 'coins', 'set', cmd.MATCH_NUM, cmd.MATCH_NUM);
 	if (! match) return next();
 
-	if (! cmd.checkAndInformLimits(message.from.id, cmd.globalCD, cmd.globalLimiter)) return;
+	if (! cmd.checkAndInformLimits(message.from.id, cmd.globalCD, cmd.globalLimiter)) return next(true);
 
 	const name = names.short(message.from);
 
@@ -20,5 +20,6 @@ export default function(message, next) {
 
 	coinsRepo.set(message.chat.id, userId, amount).then(() => {
 		api.sendMessage(message.chat.id, `${name}: Done`);
+		next(true);
 	});
 };

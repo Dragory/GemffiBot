@@ -92,6 +92,11 @@ export default function(message, next) {
 
 		stats.name = names.get(message.from);
 
+		if (! message.text.match) {
+			console.log(`message.text.match unknown, message:`);
+			console.log(message);
+		}
+
 		let setStatsMatch = message.text.match(/^\/stats\s+set\s+([0-9]+)\s+(.+)$/);
 
 		if (setStatsMatch && config.admins.indexOf(USER_ID) !== -1) {

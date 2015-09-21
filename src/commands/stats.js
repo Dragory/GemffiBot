@@ -15,6 +15,7 @@ const defaultStats = {
 	messages: 0,
 	letters: 0,
 	quote: '',
+	quoteQueue: [],
 	arrivalDate: moment.utc().format()
 };
 
@@ -41,7 +42,14 @@ function parseStatsFromMessage(message, stats) {
 
 	// Update the quote using a MEGA ALGORITHM BY RAZORIH
 	if (Math.random() < quoteUtils.getTextInterestingnessValue(message.text) || stats.quote === '') {
-		stats.quote = message.text;
+		if (stats.quoteQueue.length < 10) {
+			stats.quoteQueue.push(message.text);
+		}
+	}
+
+	if ((stats.quote === '' || Math.random() < 0.05) && stats.quoteQueue.length > 0) {
+		stats.quote = stats.quoteQueue[0];
+		stats.quoteQueue = stats.quoteQueue.slice(1);
 	}
 }
 
@@ -89,6 +97,7 @@ export default function(message, next) {
 
 	statsRepo.get(CHAT_ID, USER_ID).then((stats) => {
 		stats = initStats(stats || {});
+		if (! Array.isArray(stats.quoteQueue)) stats.quoteQueue = [];
 
 		stats.name = names.get(message.from);
 
@@ -156,6 +165,8 @@ export default function(message, next) {
 			}
 
 			return;
+		} else if (config.admins.indexOf(USER_ID) !== -1 && (message.text === '/stats queue' || message.text === `/stats@${me.username} queue`)) {
+			api.sendMessage(CHAT_ID, `${names.short(message.from)}:\n${stats.quoteQueue.join('\n')}`);
 		} else {
 			// PARSE STATS
 			parseStatsFromMessage(message, stats);

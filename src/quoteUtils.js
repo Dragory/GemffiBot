@@ -27,7 +27,7 @@ export default {
 	 * @return {Number}      Chance of being interesting
 	 */
 	getTextInterestingnessValue(text) {
-	    var interestingness = 0.05;
+	    var interestingness = 0.1; // Base interestingness value
 	    var linkregex = /(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,24}(\/\S*)?/gi;
 	    var emoticons = /:+(-)*D|xd+(plz)?|;\)|:\^\)/i;
 	    var pretriggers = ["se", "kuka", "joka", "multa", "jolta", "siltä", "sen", "nice", "noice", "tyhmä"];

@@ -25,7 +25,11 @@ const defaultStats = {
  *                             Leave empty to return only defaults.
  * @return {object}            Input stats with default values added
  */
-let initStats = Object.assign.bind(Object, {}, defaultStats);
+let initStats = (stats) => {
+	stats = Object.assign({}, defaultStats, stats);
+	stats.quoteQueue = stats.quoteQueue.slice(0);
+	return stats;
+};
 
 /**
  * Updates the input stats with the stats from the input message.

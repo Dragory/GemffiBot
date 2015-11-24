@@ -120,6 +120,7 @@ export default {
 	match,
 	MATCH_ANY,
 	MATCH_NUM,
+	MATCH_REST,
 
 	createCD,
 	createLimiter,

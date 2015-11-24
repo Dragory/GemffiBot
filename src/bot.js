@@ -14,7 +14,6 @@ import nameSaver from './commands/nameSaver';
 import statsCmd from './commands/stats';
 import eightBallCmd from './commands/8ball';
 import rollCmd from './commands/roll';
-import aiCmd from './commands/ai';
 import idCmd from './commands/id';
 import oiCmd from './commands/oi';
 import quoteCmd from './commands/quote';
@@ -25,6 +24,9 @@ import coinsSetCmd from './commands/coinsSet';
 import coinsTopCmd from './commands/coinsTop';
 
 import commandsCmd from './commands/commands';
+
+import markovReadCmd from './commands/markovRead';
+import markovGenerateCmd from './commands/markovGenerate';
 
 /**
  * COOLDOWNS/LIMITS
@@ -44,7 +46,6 @@ let commands = [
 	{cmd: statsCmd},
 	{cmd: eightBallCmd},
 	{cmd: rollCmd},
-	{cmd: aiCmd},
 	{cmd: idCmd},
 	{cmd: oiCmd},
 
@@ -55,6 +56,8 @@ let commands = [
 
 	{cmd: commandsCmd},
 
+	{cmd: markovGenerateCmd},
+	{cmd: markovReadCmd},
 	{cmd: quoteCmd}
 ];
 

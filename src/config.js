@@ -9,7 +9,8 @@ let config = Object.assign({}, {
 	"cleverbotIoUser": "",
 	"cleverbotIoKey": "",
 	"admins": [],
-	"quoteBanned": []
+	"quoteBanned": [],
+	"markovCharLength": 4
 }, data);
 
 export default config;

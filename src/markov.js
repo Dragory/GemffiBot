@@ -2,9 +2,12 @@ const links = /(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,24}(\/\S*
 const punctuation = /[.,\-_]/gi;
 const whitespace = /\s+/gi;
 const startsWithWhitespace = /^\s+/;
+const onlyWhitespace = /^\s+$/;
 
 function createMarkovTable(sourceText, charLength = 1) {
     let table = {};
+    
+    if (sourceText.length < charLength) return table;
 
     sourceText = sourceText
         .replace(links, '')
@@ -16,9 +19,9 @@ function createMarkovTable(sourceText, charLength = 1) {
         let char = sourceText.slice(i, i + charLength),
             prev = (i >= charLength ? sourceText.slice(i - charLength, i) : null);
 
-        if (startsWithWhitespace.test(char)) continue;
-
         table[char] = table[char] || {};
+        
+        if (onlyWhitespace.test(char)) continue;
 
         // Add weight to this char following the previous one
         if (prev && table[prev]) table[prev][char] = (table[prev][char] || 0) + 1;

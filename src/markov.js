@@ -4,23 +4,26 @@ const whitespace = /\s+/gi;
 const startsWithWhitespace = /^\s+/;
 const onlyWhitespace = /^\s+$/;
 
-function createMarkovTable(sourceText, charLength = 1) {
-    let table = {};
-    
-    if (sourceText.length < charLength) return table;
-
-    sourceText = sourceText
+function cleanSourceText(sourceText) {
+    return sourceText
         .replace(links, '')
         .replace(punctuation, '')
         .replace(whitespace, ' ')
         .toLowerCase();
+}
+
+function createMarkovTable(sourceText, charLength = 1) {
+    let table = {};
+
+    sourceText = cleanSourceText(sourceText);
+    if (sourceText.length < charLength) return table;
 
     for (let i = 0; i < (sourceText.length - charLength); i++) {
         let char = sourceText.slice(i, i + charLength),
             prev = (i >= charLength ? sourceText.slice(i - charLength, i) : null);
 
         table[char] = table[char] || {};
-        
+
         if (onlyWhitespace.test(char)) continue;
 
         // Add weight to this char following the previous one
@@ -30,9 +33,28 @@ function createMarkovTable(sourceText, charLength = 1) {
     return table;
 }
 
-function generateText(table, length) {
+function generateText(table, length, start = null) {
     let text = '',
+        maxKeyLength = Object.keys(table).reduce((max, key) => Math.max(max, key.length), 0),
         prev = null;
+
+    start = (start ? cleanSourceText(start) : null);
+
+    // If the start is specified, try to find the longest existing key from its end we can continue from
+    if (start) {
+        text = start;
+
+        for (let i = maxKeyLength; i > 1; i--) {
+            let candPrev = start.slice(-1 * i);
+            if (table[candPrev] && Object.keys(table[candPrev]).length) {
+                prev = candPrev;
+                break;
+            }
+        }
+
+        // If we can't continue from the start, add a space so we don't just mash two words together
+        if (! prev) text += ' ';
+    }
 
     for (let i = 0; i < length; i++) {
         if (prev && table[prev] && Object.keys(table[prev]).length) {
@@ -44,7 +66,7 @@ function generateText(table, length) {
         text += prev;
     }
 
-    return text.trim();
+    return text.trim().replace(/\s+/g, ' ');
 }
 
 function randomKey(obj) {

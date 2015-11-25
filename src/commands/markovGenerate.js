@@ -5,8 +5,18 @@ import markov from '../markov';
 import markovRepo from '../markovRepo';
 
 export default function(message, next) {
-    let match = cmd.match(message.text, 'generate', cmd.MATCH_REST) || cmd.match(message.text, 'generate');
+    let match = cmd.match(message.text, 'generate', cmd.MATCH_NUM, cmd.MATCH_REST)
+        || cmd.match(message.text, 'generate', cmd.MATCH_NUM)
+        || cmd.match(message.text, 'generate', cmd.MATCH_REST)
+        || cmd.match(message.text, 'generate');
+
     if (! match) return next();
+
+    // The user can supply a custom beginning for the generated text
+    // This can either replace the length param or come after it, preferring the one after
+    let start = null;
+    if (match[1]) start = match[1];
+    if (match[0] && isNaN(match[0])) start = match[0];
 
     // We want the UI to expose the length in chars, but the internal implementation uses the number of markov table keys
     // Hence, we divide the given length by the markov key length and ceil that, but also want it always to be min 1 (otherwise we would generate empty strings)
@@ -15,7 +25,7 @@ export default function(message, next) {
 
     markovRepo.get(message.chat.id).then((table) => {
         if (! table) return next();
-        let text = markov.generateText(table, length);
+        let text = markov.generateText(table, length, start);
         text = (text.slice(0, 1).toUpperCase() + text.slice(1)).trim() + '.';
 
         api.sendMessage(message.chat.id, `${text}`);

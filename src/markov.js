@@ -44,7 +44,7 @@ function generateText(table, length) {
         text += prev;
     }
 
-    return text;
+    return text.trim();
 }
 
 function randomKey(obj) {

@@ -10,7 +10,7 @@ export default function(message, next) {
 
     // We want the UI to expose the length in chars, but the internal implementation uses the number of markov table keys
     // Hence, we divide the given length by the markov key length and ceil that, but also want it always to be min 1 (otherwise we would generate empty strings)
-    let userLength = (match[0] ? Math.min(200, Math.max(1, parseInt(match[0], 10))) : 32);
+    let userLength = (match[0] && ! isNaN(match[0]) ? Math.min(200, Math.max(1, parseInt(match[0], 10))) : 32);
     let length = Math.max(1, Math.ceil(userLength / config.markovCharLength));
 
     markovRepo.get(message.chat.id).then((table) => {

@@ -7,7 +7,6 @@ const onlyWhitespace = /^\s+$/;
 function cleanSourceText(sourceText) {
     return sourceText
         .replace(links, '')
-        .replace(punctuation, '')
         .replace(whitespace, ' ')
         .toLowerCase();
 }

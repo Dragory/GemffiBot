@@ -39,6 +39,14 @@ function generateText(table, length, start = null) {
 
     start = (start ? cleanSourceText(start) : null);
 
+    table = JSON.parse(JSON.stringify(table));
+    
+    for (let key in table) {
+        for (let subKey in table[key]) {
+            table[key][subKey] = Math.pow(table[key][subKey], 2);
+        }
+    }
+
     // If the start is specified, try to find the longest existing key from its end we can continue from
     if (start) {
         text = start;
@@ -74,14 +82,6 @@ function randomKey(obj) {
 }
 
 function weightedRandom(candidates) {
-    let candidates = JSON.parse(JSON.stringify(candidates));
-    
-    for (let key in candidates) {
-        for (let subKey in candidates[key]) {
-            candidates[key][subKey] = Math.pow(candidates[key][subKey], 2);
-        }
-    }
-    
     let total = Object.keys(candidates).reduce((total, key) => total + candidates[key], 0),
         rand = Math.floor(Math.random() * total);
 

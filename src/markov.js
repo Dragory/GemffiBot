@@ -74,7 +74,15 @@ function randomKey(obj) {
 }
 
 function weightedRandom(candidates) {
-    let total = Object.keys(candidates).reduce((total, key) => total + Math.pow(candidates[key], 2), 0),
+    let candidates = JSON.parse(JSON.stringify(candidates));
+    
+    for (let key in candidates) {
+        for (let subKey in candidates[key]) {
+            candidates[key][subKey] = Math.pow(candidates[key][subKey], 2);
+        }
+    }
+    
+    let total = Object.keys(candidates).reduce((total, key) => total + candidates[key], 0),
         rand = Math.floor(Math.random() * total);
 
     for (let key in candidates) {

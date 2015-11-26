@@ -4,6 +4,8 @@ import cmd from '../cmd';
 import markov from '../markov';
 import markovRepo from '../markovRepo';
 
+const regularCharRegex = /[a-zäåöA-ZÄÅÖ]/;
+
 export default function(message, next) {
     let match = cmd.match(message.text, 'generate', cmd.MATCH_NUM, cmd.MATCH_REST)
         || cmd.match(message.text, 'generate', cmd.MATCH_NUM)
@@ -26,7 +28,9 @@ export default function(message, next) {
     markovRepo.get(message.chat.id).then((table) => {
         if (! table) return next();
         let text = markov.generateText(table, length, start);
-        text = (text.slice(0, 1).toUpperCase() + text.slice(1)).trim() + '.';
+        text = (text.slice(0, 1).toUpperCase() + text.slice(1)).trim();
+        
+        if (regularCharRegex.test(text.slice(-1))) text += '.';
 
         api.sendMessage(message.chat.id, `${text}`);
         next();

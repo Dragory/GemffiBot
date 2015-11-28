@@ -6,6 +6,9 @@ import markovRepo from '../markovRepo';
 
 const regularCharRegex = /[a-zäåöA-ZÄÅÖ]/;
 
+let generateCD = cmd.createCD(60);
+let generateLimiter = cmd.createLimiter(3, 60 * 60);
+
 export default function(message, next) {
     let match = cmd.match(message.text, 'generate', cmd.MATCH_NUM, cmd.MATCH_REST)
         || cmd.match(message.text, 'generate', cmd.MATCH_NUM)
@@ -13,6 +16,8 @@ export default function(message, next) {
         || cmd.match(message.text, 'generate');
 
     if (! match) return next();
+
+    if (! cmd.checkAndInformLimits(message.from.id, generateCD, generateLimiter)) return next(true);
 
     // The user can supply a custom beginning for the generated text
     // This can either replace the length param or come after it, preferring the one after
@@ -29,7 +34,7 @@ export default function(message, next) {
         if (! table) return next();
         let text = markov.generateText(table, length, start);
         text = (text.slice(0, 1).toUpperCase() + text.slice(1)).trim();
-        
+
         if (regularCharRegex.test(text.slice(-1))) text += '.';
 
         api.sendMessage(message.chat.id, `${text}`);

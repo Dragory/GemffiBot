@@ -105,9 +105,11 @@ export default function(message, next) {
 
 		stats.name = names.get(message.from);
 
-		if (! message.text.match) {
+		if (! message.text || ! message.text.match) {
 			console.log(`message.text.match unknown, message:`);
 			console.log(message);
+			next();
+			return;
 		}
 
 		let setStatsMatch = message.text.match(/^\/stats\s+set\s+([0-9]+)\s+(.+)$/);

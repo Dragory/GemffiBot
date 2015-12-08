@@ -2,6 +2,8 @@ import api from '../api';
 import cmd from '../cmd';
 
 export default function(message, next) {
+	if (! message.text) return next();
+	
 	let match = cmd.match(message.text, 'commands');
 	if (! match) return next();
 

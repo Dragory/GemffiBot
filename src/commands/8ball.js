@@ -21,6 +21,8 @@ const eightBallReplies = [
 ];
 
 export default function(message, next) {
+	if (! message.text) return next();
+
 	let match = cmd.match(message.text, '8ball', cmd.MATCH_REST);
 	if (! match) return next();
 

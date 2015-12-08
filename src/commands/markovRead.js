@@ -5,6 +5,8 @@ import markovRepo from '../markovRepo';
 const MARKOV_CHAR_LENGTH = 4;
 
 export default function(message, next) {
+	if (! message.text) return next();
+	
     if (message.text.startsWith('/') || message.text.startsWith('!')) return next();
 
     let newTable = markov.createMarkovTable(message.text, config.markovCharLength);

@@ -8,6 +8,8 @@ let coinsCD = cmd.createCD(5);
 let coinsLimiter = cmd.createLimiter(5, 60 * 10);
 
 export default function(message, next) {
+	if (! message.text) return next();
+	
 	let match = cmd.match(message.text, 'bet', cmd.MATCH_NUM, 'for', cmd.MATCH_NUM);
 	if (! match) return next();
 

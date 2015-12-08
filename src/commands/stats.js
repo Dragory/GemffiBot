@@ -38,6 +38,8 @@ let initStats = (stats) => {
  * @return {void}
  */
 function parseStatsFromMessage(message, stats) {
+	if (! message.text) return next();
+	
 	if (message.text[0] === '/' || message.text[0] === '!' || message.text.match(/^\s*$/) !== null) return;
 
 	// Update the stats

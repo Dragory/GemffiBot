@@ -10,12 +10,26 @@ let generateCD = cmd.createCD(60);
 let generateLimiter = cmd.createLimiter(3, 60 * 60);
 
 export default function(message, next) {
+	if (! message.text) return next();
+
     let match = cmd.match(message.text, 'generate', cmd.MATCH_NUM, cmd.MATCH_REST)
         || cmd.match(message.text, 'generate', cmd.MATCH_NUM)
         || cmd.match(message.text, 'generate', cmd.MATCH_REST)
         || cmd.match(message.text, 'generate');
 
-    if (! match) return next();
+    if (! match) {
+        let spammerMatch = cmd.match(message.text, 'olen homo ja spämmin');
+
+        if (spammerMatch) {
+            generateCD.reset(message.from.id);
+            generateLimiter.reset(message.from.id);
+            api.sendMessage(message.chat.id, `vittu mitä paskaa`);
+
+            return next(true);
+        }
+
+        return next();
+    }
 
     if (! cmd.checkAndInformLimits(message.from.id, generateCD, generateLimiter)) return next(true);
 
@@ -32,6 +46,7 @@ export default function(message, next) {
 
     markovRepo.get(message.chat.id).then((table) => {
         if (! table) return next();
+
         let text = markov.generateText(table, length, start);
         text = (text.slice(0, 1).toUpperCase() + text.slice(1)).trim();
 

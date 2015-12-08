@@ -11,6 +11,17 @@ function cleanSourceText(sourceText) {
         .toLowerCase();
 }
 
+function cloneObject(obj) {
+    let clone = {};
+
+    for (let key in obj) {
+        if (typeof obj[key] === 'object') clone[key] = cloneObject(obj[key]);
+        clone[key] = obj[key];
+    }
+
+    return clone;
+}
+
 function createMarkovTable(sourceText, charLength = 1) {
     let table = {};
 
@@ -39,8 +50,8 @@ function generateText(table, length, start = null) {
 
     start = (start ? cleanSourceText(start) : null);
 
-    table = JSON.parse(JSON.stringify(table));
-    
+    table = cloneObject(table);
+
     for (let key in table) {
         for (let subKey in table[key]) {
             table[key][subKey] = Math.pow(table[key][subKey], 2);

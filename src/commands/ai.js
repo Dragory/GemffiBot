@@ -19,6 +19,8 @@ bot.create((err, session) => {
 });
 
 export default function(message, next) {
+	if (! message.text) return next();
+	
 	if (botSession == null) return next();
 
 	let match = cmd.match(message.text, 'ai', cmd.MATCH_REST);

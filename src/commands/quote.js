@@ -7,6 +7,8 @@ import quoteRepo from '../quoteRepo';
 import Promise from 'bluebird';
 
 function handleSetQuote(chatId, trigger, text, message, next) {
+	if (! message.text) return next();
+	
 	const name = names.short(message.from);
 
 	if (config.quoteBanned.indexOf(message.from.id) !== -1) {

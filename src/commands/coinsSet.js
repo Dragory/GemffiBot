@@ -6,6 +6,8 @@ import cmd from '../cmd';
 import coinsRepo from '../coinsRepo';
 
 export default function(message, next) {
+	if (! message.text) return next();
+	
 	// Admin only
 	if (config.admins.indexOf(message.from.id) === -1) return next();
 

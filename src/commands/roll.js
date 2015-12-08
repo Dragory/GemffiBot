@@ -7,6 +7,8 @@ import me from '../me';
 import rollWinsRepo from '../rollWinsRepo';
 
 export default function(message, next) {
+	if (! message.text) return next();
+	
 	let dMatch = message.text.match('^\/d((?:\-)?[0-9]+)');
 	if (dMatch !== null) message.text = '/roll ' + dMatch[1];
 

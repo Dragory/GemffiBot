@@ -6,6 +6,8 @@ import cmd from '../cmd';
 import coinsRepo from '../coinsRepo';
 
 export default function(message, next) {
+	if (! message.text) return next();
+	
 	let match = cmd.match(message.text, 'top');
 	if (! match) return next();
 

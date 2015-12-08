@@ -3,6 +3,8 @@ import names from '../names';
 import me from '../me';
 
 export default function(message, next) {
+	if (! message.text) return next();
+	
 	let idMatch = message.text.match('^\/id(?:@${me.username})?$');
 	let cidMatch = message.text.match('^\/cid(?:@${me.username})?$');
 

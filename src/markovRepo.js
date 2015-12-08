@@ -12,19 +12,29 @@ var dbReady = db.runAsync(`
 	)
 `);
 
+var cache = {};
+
 function get(chat_id) {
+	if (cache[chat_id]) return Promise.resolve(cache[chat_id]);
+
 	return dbReady.then(() => {
 		return db.getAsync(`
 			SELECT * FROM markov
 			WHERE chat_id = $chat_id
 		`, {$chat_id: chat_id}).then((row) => {
 			if (! row) return null;
-			return JSON.parse(row.table);
+
+			var parsed = JSON.parse(row.table);
+			cache[chat_id] = parsed;
+
+			return parsed;
 		});
 	});
 }
 
 function update(chat_id, table) {
+	cache[chat_id] = table;
+
 	let params = {
 		$chat_id: chat_id,
 		$table: JSON.stringify(table)

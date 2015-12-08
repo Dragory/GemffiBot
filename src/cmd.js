@@ -39,6 +39,10 @@ function createCD(secs) {
 			let remaining = ((onCD[id] || 0) - (new Date()).getTime()) / 1000;
 			remaining = Math.round(remaining * 100) / 100;
 			return `Command on cooldown (${remaining} seconds left)`;
+		},
+
+		reset: (id) => {
+			delete onCD[id];
 		}
 	};
 }
@@ -62,6 +66,10 @@ function createLimiter(maxCalls, inSecs) {
 
 		error: (id) => {
 			return `Command is throttled (max ${maxCalls} uses allowed in ${inSecs} seconds)`;
+		},
+
+		reset: (id) => {
+			delete calls[id];
 		}
 	};
 }

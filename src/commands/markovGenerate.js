@@ -57,4 +57,4 @@ export default function(message, next) {
     });
 
     next(true);
-};
+}

@@ -64,7 +64,7 @@ function createLimiter(maxCalls, inSecs) {
 			return ((calls[id] || 0) >= maxCalls);
 		},
 
-		error: (id) => {
+		error: () => {
 			return `Command is throttled (max ${maxCalls} uses allowed in ${inSecs} seconds)`;
 		},
 
@@ -96,6 +96,7 @@ function checkAndInformLimits(id, cd, limiter) {
  * Calls cb() once finished.
  * @param  {Array}    commands Commands to run
  * @param  {Function} cb       Function to call after finishing with this update
+ * @return {Function}          The newly created handler
  */
 function createUpdateHandler(commands, cb) {
 	let timeout, done = () => {

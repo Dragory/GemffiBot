@@ -66,18 +66,6 @@ function generateText(table, length, start = null) {
     start = (start ? cleanSourceText(start) : null);
     genStats.clean = (new Date()).getTime() - cleanStart;
 
-    let cloneStart = (new Date()).getTime();
-    table = cloneObject(table);
-    genStats.clone = (new Date()).getTime() - cloneStart;
-
-    let multStart = (new Date()).getTime();
-    for (let key in table) {
-        for (let subKey in table[key]) {
-            table[key][subKey] = Math.pow(table[key][subKey], 2);
-        }
-    }
-    genStats.mult = (new Date()).getTime() - multStart;
-
     // If the start is specified, try to find the longest existing key from its end we can continue from
     if (start) {
         text = start;
@@ -99,7 +87,7 @@ function generateText(table, length, start = null) {
     let genStart = (new Date()).getTime();
     for (let i = 0; i < length; i++) {
         if (prev && table[prev] && Object.keys(table[prev]).length) {
-            prev = weightedRandom(table[prev]);
+            prev = weightedRandom(table[prev], 2);
         } else {
             prev = randomKey(table);
         }
@@ -121,9 +109,20 @@ function randomKey(obj) {
     return keys[Math.floor(Math.random() * keys.length)];
 }
 
-function weightedRandom(candidates) {
-    let total = Object.keys(candidates).reduce((total, key) => total + candidates[key], 0),
-        rand = Math.floor(Math.random() * total);
+function weightedRandom(candidates, weightExp) {
+    candidates = cloneObject(candidates);
+
+    let total = Object.keys(candidates).reduce((total, key) => {
+        if (weightExp) {
+            total += Math.pow(candidates[key], weightExp);
+        } else {
+            total += candidates[key];
+        }
+
+        return total;
+    }, 0);
+
+    let rand = Math.floor(Math.random() * total);
 
     for (let key in candidates) {
         if (rand < candidates[key]) return key;

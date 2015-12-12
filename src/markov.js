@@ -43,25 +43,46 @@ function createMarkovTable(sourceText, charLength = 1) {
     return table;
 }
 
+let genStats = {
+
+};
+
+function getGenStats() {
+    return genStats;
+}
+
 function generateText(table, length, start = null) {
+    let fullGenStart = (new Date()).getTime();
+
+    let maxKeyLengthFindStart = (new Date()).getTime();
+
     let text = '',
         maxKeyLength = Object.keys(table).reduce((max, key) => Math.max(max, key.length), 0),
         prev = null;
 
+    genStats.maxKeyLengthFind = (new Date()).getTime() - maxKeyLengthFindStart;
+
+    let cleanStart = (new Date()).getTime();
     start = (start ? cleanSourceText(start) : null);
+    genStats.clean = (new Date()).getTime() - cleanStart;
 
+    let cloneStart = (new Date()).getTime();
     table = cloneObject(table);
+    genStats.clone = (new Date()).getTime() - cloneStart;
 
+    let multStart = (new Date()).getTime();
     for (let key in table) {
         for (let subKey in table[key]) {
             table[key][subKey] = Math.pow(table[key][subKey], 2);
         }
     }
+    genStats.mult = (new Date()).getTime() - multStart;
 
     // If the start is specified, try to find the longest existing key from its end we can continue from
     if (start) {
         text = start;
 
+        let longestStart = (new Date()).getTime();
         for (let i = maxKeyLength; i > 1; i--) {
             let candPrev = start.slice(-1 * i);
             if (table[candPrev] && Object.keys(table[candPrev]).length) {
@@ -69,11 +90,13 @@ function generateText(table, length, start = null) {
                 break;
             }
         }
+        genStats.longestFind = (new Date()).getTime() - longestStart;
 
         // If we can't continue from the start, add a space so we don't just mash two words together
         if (! prev) text += ' ';
     }
 
+    let genStart = (new Date()).getTime();
     for (let i = 0; i < length; i++) {
         if (prev && table[prev] && Object.keys(table[prev]).length) {
             prev = weightedRandom(table[prev]);
@@ -83,8 +106,14 @@ function generateText(table, length, start = null) {
 
         text += prev;
     }
+    genStats.gen = (new Date()).getTime() - genStart;
 
-    return text.trim().replace(/\s+/g, ' ');
+    let trimReplaceStart = (new Date()).getTime();
+    let ready = text.trim().replace(/\s+/g, ' ');
+    genStats.trimReplace = (new Date()).getTime() - trimReplaceStart;
+
+    genStats.full = (new Date()).getTime() - fullGenStart;
+    return ready;
 }
 
 function randomKey(obj) {
@@ -106,5 +135,6 @@ function weightedRandom(candidates) {
 
 export default {
     createMarkovTable,
-    generateText
+    generateText,
+    getGenStats
 };

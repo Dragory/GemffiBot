@@ -112,15 +112,13 @@ function randomKey(obj) {
 function weightedRandom(candidates, weightExp) {
     candidates = cloneObject(candidates);
 
-    let total = Object.keys(candidates).reduce((total, key) => {
-        if (weightExp) {
-            total += Math.pow(candidates[key], weightExp);
-        } else {
-            total += candidates[key];
-        }
+    if (weightExp) {
+        Object.keys(candidates).forEach((key) => {
+            candidates[key] = Math.pow(candidates[key], weightExp);
+        });
+    }
 
-        return total;
-    }, 0);
+    let total = Object.keys(candidates).reduce((total, key) => total + candidates[key], 0);
 
     let rand = Math.floor(Math.random() * total);
 

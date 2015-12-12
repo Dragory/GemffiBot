@@ -30,16 +30,7 @@
 		"experimentalObjectRestSpread": true,
 	},
 	"env": {
-		"browser": true
-	},
-	"globals": {
-		"angular": true,
-		"userId": true,
-		"URLS": true,
-		"CONSTANTS": true,
-		"_": true,
-		"moment": true,
-		"BigNumber": true
+		"node": true
 	},
 	"rules": {
 		"eqeqeq": [2, "smart"],

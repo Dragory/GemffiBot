@@ -1,10 +1,7 @@
 import "babel/polyfill";
 
-import request from 'request';
-import config from './config';
 import api from './api';
 import cmd from './cmd';
-import shutdown from './shutdown';
 
 /**
  * COMMAND IMPORTS
@@ -27,15 +24,7 @@ import commandsCmd from './commands/commands';
 
 import markovReadCmd from './commands/markovRead';
 import markovGenerateCmd from './commands/markovGenerate';
-
-/**
- * COOLDOWNS/LIMITS
- */
-
-var defaultCD = cmd.createCD(30);
-var shortCD   = cmd.createCD(5);
-
-var defaultLimiter = cmd.createLimiter(5, 60 * 10);
+import markovStatsCmd from './commands/markovStats';
 
 /**
  * COMMAND LISTING
@@ -58,6 +47,8 @@ let commands = [
 
 	{cmd: markovGenerateCmd},
 	{cmd: markovReadCmd},
+	{cmd: markovStatsCmd},
+
 	{cmd: quoteCmd}
 ];
 

@@ -39,16 +39,23 @@ export default function(message, next) {
     if (match[1]) start = match[1];
     if (match[0] && isNaN(match[0])) start = match[0];
 
+	// Always start with a new word after the start
+	if (start) start = start.trim() + ' ';
+
     // We want the UI to expose the length in chars, but the internal implementation uses the number of markov table keys
     // Hence, we divide the given length by the markov key length and ceil that, but also want it always to be min 1 (otherwise we would generate empty strings)
     let userLength = (match[0] && ! isNaN(match[0]) ? Math.min(200, Math.max(1, parseInt(match[0], 10))) : 32);
     let length = Math.max(1, Math.ceil(userLength / config.markovCharLength));
+	let lengthDiff = userLength - length;
 
     markovRepo.get(message.chat.id).then((table) => {
         if (! table) return next();
 
         let text = markov.generateText(table, length, start);
         text = (text.slice(0, 1).toUpperCase() + text.slice(1)).trim();
+
+		// If the user requested e.g. 6 chars but we generated 8 (because of table key length), truncate the result to 6 here
+		text = text.slice(0, text.length - lengthDiff);
 
         if (regularCharRegex.test(text.slice(-1))) text += '.';
 

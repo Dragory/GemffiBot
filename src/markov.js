@@ -123,11 +123,11 @@ function weightedRandom(candidates, weightExp) {
     let rand = Math.floor(Math.random() * total);
 
     for (let key in candidates) {
-        if (rand < candidates[key]) return key;
+        if (rand <= candidates[key]) return key;
         rand -= candidates[key];
     }
 
-    return null;
+    return '[[ _ EI _ ]]';
 }
 
 export default {

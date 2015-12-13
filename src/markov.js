@@ -96,12 +96,8 @@ function generateText(table, length, start = null) {
     }
     genStats.gen = (new Date()).getTime() - genStart;
 
-    let trimReplaceStart = (new Date()).getTime();
-    let ready = text.trim().replace(/\s+/g, ' ');
-    genStats.trimReplace = (new Date()).getTime() - trimReplaceStart;
-
     genStats.full = (new Date()).getTime() - fullGenStart;
-    return ready;
+    return text;
 }
 
 function randomKey(obj) {

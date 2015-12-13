@@ -53,12 +53,11 @@ export default function(message, next) {
         if (! table) return next();
 
         let text = markov.generateText(table, length, start);
-        text = (text.slice(0, 1).toUpperCase() + text.slice(1)).trim();
 
 		// If the user requested e.g. 6 chars but we generated 8 (because of table key length), truncate the result to 6 here
 		text = text.slice(0, text.length - lengthDiff);
 
-        if (regularCharRegex.test(text.slice(-1))) text += '.';
+        text = (text.slice(0, 1).toUpperCase() + text.slice(1)).replace(/\s+/, ' ').trim() + '.';
 
         api.sendMessage(message.chat.id, `${text} (length diff ${lengthDiff})`);
         next();

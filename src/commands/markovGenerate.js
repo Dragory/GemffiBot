@@ -59,7 +59,7 @@ export default function(message, next) {
 
         text = (text.slice(0, 1).toUpperCase() + text.slice(1)).replace(/\s+/, ' ').trim() + '.';
 
-        api.sendMessage(message.chat.id, `${text} (length diff ${lengthDiff})`);
+        api.sendMessage(message.chat.id, `${text}`);
         next();
     });
 

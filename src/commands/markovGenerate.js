@@ -60,7 +60,7 @@ export default function(message, next) {
 
         if (regularCharRegex.test(text.slice(-1))) text += '.';
 
-        api.sendMessage(message.chat.id, `${text}`);
+        api.sendMessage(message.chat.id, `${text} (length diff ${lengthDiff})`);
         next();
     });
 
